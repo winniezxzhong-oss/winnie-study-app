@@ -245,6 +245,58 @@ a{color:var(--primary);text-decoration:none}
 <script>
 "use strict";
 
+// ============ Polyfills (for old iPad Safari) ============
+if (!String.prototype.padStart) {
+  String.prototype.padStart = function(targetLength, padString) {
+    var str = String(this);
+    padString = padString || " ";
+    while (str.length < targetLength) { str = padString + str; }
+    return str;
+  };
+}
+if (!String.prototype.padEnd) {
+  String.prototype.padEnd = function(targetLength, padString) {
+    var str = String(this);
+    padString = padString || " ";
+    while (str.length < targetLength) { str = str + padString; }
+    return str;
+  };
+}
+if (!Array.prototype.flatMap) {
+  Array.prototype.flatMap = function(fn) {
+    var result = [];
+    for (var i = 0; i < this.length; i++) {
+      var val = fn(this[i], i, this);
+      if (Array.isArray(val)) { result = result.concat(val); }
+      else { result.push(val); }
+    }
+    return result;
+  };
+}
+if (!Array.prototype.flat) {
+  Array.prototype.flat = function() {
+    var result = [];
+    for (var i = 0; i < this.length; i++) {
+      if (Array.isArray(this[i])) { result = result.concat(this[i]); }
+      else { result.push(this[i]); }
+    }
+    return result;
+  };
+}
+
+// Global error handler - show errors on page instead of blank
+window.addEventListener('error', function(e) {
+  var div = document.getElementById('pages');
+  if (div && div.innerHTML === '') {
+    div.innerHTML = '<div style="padding:20px;margin:12px;background:#fff;border-radius:14px;box-shadow:0 4px 15px rgba(0,0,0,0.08)">' +
+      '<div style="font-size:18px;font-weight:700;margin-bottom:12px">⚠️ 页面加载出错了</div>' +
+      '<p style="color:#666;line-height:1.6">错误：' + (e.message || '未知错误') + '</p>' +
+      '<p style="color:#999;font-size:13px;margin-top:8px">请截图发给我，我帮你修复！</p>' +
+      '<p style="color:#999;font-size:13px">也可以试试清除浏览器数据后重新打开。</p>' +
+      '</div>';
+  }
+});
+
 // ============ Constants ============
 var STORAGE_KEY = "winnie_data_v1";
 var AUTH_KEY = "winnie_auth_v1";
@@ -1631,11 +1683,20 @@ function importData(event) {
 
 // ============ Init ============
 async function init() {
-  loadState();
-  loadAuth();
-  applyFontSize();
-  renderNav();
-  switchPage("home");
+  try { loadState(); } catch(e) { console.error("loadState error:", e); state = defaultState(); }
+  try { loadAuth(); } catch(e) { console.error("loadAuth error:", e); }
+  try { applyFontSize(); } catch(e) { console.error("applyFontSize error:", e); }
+  try { renderNav(); } catch(e) { console.error("renderNav error:", e); }
+  try { switchPage("home"); } catch(e) {
+    console.error("switchPage error:", e);
+    var div = document.getElementById("pages");
+    if (div) {
+      div.innerHTML = '<div style="padding:20px;margin:12px;background:#fff;border-radius:14px;box-shadow:0 4px 15px rgba(0,0,0,0.08)">' +
+        '<div style="font-size:18px;font-weight:700;margin-bottom:12px">⚠️ 页面渲染出错了</div>' +
+        '<p style="color:#666;line-height:1.6">错误：' + (e.message || e) + '</p>' +
+        '<p style="color:#999;font-size:13px;margin-top:8px">请截图发给我，我帮你修复！</p></div>';
+    }
+  }
 
   // Health check
   try {
@@ -1657,7 +1718,28 @@ async function init() {
   } catch(e) {}
 }
 
-init();
+// Safe init wrapper
+try {
+  init().catch(function(e) {
+    console.error("Init async error:", e);
+    var div = document.getElementById("pages");
+    if (div) {
+      div.innerHTML = '<div style="padding:20px;margin:12px;background:#fff;border-radius:14px;box-shadow:0 4px 15px rgba(0,0,0,0.08)">' +
+        '<div style="font-size:18px;font-weight:700;margin-bottom:12px">⚠️ 初始化失败</div>' +
+        '<p style="color:#666;line-height:1.6">' + (e.message || e) + '</p>' +
+        '<p style="color:#999;font-size:13px;margin-top:8px">请截图发给我，我帮你修复！</p></div>';
+    }
+  });
+} catch(e) {
+  console.error("Init sync error:", e);
+  var div = document.getElementById("pages");
+  if (div) {
+    div.innerHTML = '<div style="padding:20px;margin:12px;background:#fff;border-radius:14px;box-shadow:0 4px 15px rgba(0,0,0,0.08)">' +
+      '<div style="font-size:18px;font-weight:700;margin-bottom:12px">⚠️ 初始化失败</div>' +
+      '<p style="color:#666;line-height:1.6">' + (e.message || e) + '</p>' +
+      '<p style="color:#999;font-size:13px;margin-top:8px">请截图发给我，我帮你修复！</p></div>';
+  }
+}
 </script>
 </body>
 </html>
