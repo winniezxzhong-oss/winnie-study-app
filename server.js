@@ -348,7 +348,9 @@ async function handleRequest(req, res) {
   // Serve static files
   if (method === "GET") {
     var filePath = pathname === "/" ? "/index.html" : pathname;
-    var fullPath = path.join(__dirname, filePath);
+    // Remove leading slash for path.join
+    var relPath = filePath.replace(/^\//, "");
+    var fullPath = path.join(__dirname, relPath);
     // Prevent directory traversal
     if (!fullPath.startsWith(__dirname)) {
       sendJSON(res, 403, { error: "Forbidden" });
@@ -376,7 +378,36 @@ async function handleRequest(req, res) {
         res.end(content);
         return;
       }
-    } catch(e) {}
+    } catch(e) {
+      // If index.html is missing, return a helpful page
+      if (relPath === "index.html") {
+        res.writeHead(200, { "Content-Type": "text/html; charset=utf-8" });
+        res.end("<!DOCTYPE html><html><head><meta charset='utf-8'><title>Winnie上岸吧</title></head><body style='font-family:sans-serif;padding:40px;max-width:600px;margin:0 auto;text-align:center'>" +
+          "<h1>🎀 Winnie上岸吧</h1>" +
+          "<p>服务器已启动，但找不到 <code>index.html</code> 文件。</p>" +
+          "<p>请检查 GitHub 仓库中是否有以下 4 个文件：</p>" +
+          "<ul style='text-align:left;display:inline-block'>" +
+          "<li>index.html</li><li>server.js</li><li>package.json</li><li>render.yaml</li>" +
+          "</ul>" +
+          "<p>确认文件齐全后，在 Render 页面点 <strong>Manual Deploy → Clear build cache & deploy</strong> 重新部署。</p>" +
+          "</body></html>");
+        return;
+      }
+    }
+
+    // SPA fallback: serve index.html for non-file GET routes (excluding API)
+    if (!relPath.startsWith("api/") && !ext) {
+      try {
+        var indexPath = path.join(__dirname, "index.html");
+        var indexContent = fs.readFileSync(indexPath);
+        res.writeHead(200, {
+          "Content-Type": "text/html; charset=utf-8",
+          "Cache-Control": "no-cache"
+        });
+        res.end(indexContent);
+        return;
+      } catch(e) {}
+    }
   }
 
   // 404
@@ -387,6 +418,14 @@ async function handleRequest(req, res) {
 var server = http.createServer(handleRequest);
 server.listen(PORT, function() {
   console.log("🎀 Winnie上岸吧 server running on port " + PORT);
+  console.log("  Working dir (__dirname): " + __dirname);
   console.log("  AI Proxy: " + (AI_API_KEY ? "✅ enabled" : "❌ disabled (set AI_API_KEY)"));
   console.log("  Sync: ✅ enabled");
+  // List files in working directory for debugging
+  try {
+    var files = fs.readdirSync(__dirname);
+    console.log("  Files in directory: " + files.join(", "));
+  } catch(e) {
+    console.log("  Could not list directory: " + e.message);
+  }
 });
