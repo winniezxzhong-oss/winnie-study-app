@@ -1,0 +1,1663 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="default">
+<meta name="apple-mobile-web-app-title" content="Winnie上岸吧">
+<meta name="theme-color" content="#ff5b8d">
+<title>🎀 Winnie上岸吧</title>
+<style>
+:root {
+  --primary: #ff5b8d;
+  --primary-light: #ff8fab;
+  --primary-lighter: #ffd6e3;
+  --primary-bg: #fff5f9;
+  --bg: #f5f7fa;
+  --card-bg: #ffffff;
+  --text: #5a5a7a;
+  --text-light: #b0b0c0;
+  --text-dark: #3a3a5a;
+  --border: #ffe0ed;
+  --border-light: #f0f0f5;
+  --shadow: 0 4px 15px rgba(255, 91, 141, 0.08);
+  --shadow-hover: 0 6px 24px rgba(255, 91, 141, 0.15);
+  --radius: 14px;
+  --radius-sm: 8px;
+  --sidebar-width: 190px;
+  --bottom-tab-height: 62px;
+}
+*{margin:0;padding:0;box-sizing:border-box}
+html{font-size:15px}
+body{font-family:-apple-system,BlinkMacSystemFont,"Segoe UI","PingFang SC","Microsoft YaHei",sans-serif;background:var(--bg);color:var(--text);line-height:1.6;-webkit-font-smoothing:antialiased;-webkit-tap-highlight-color:transparent}
+input,textarea,select,button{font-family:inherit;font-size:inherit;border:none;outline:none}
+a{color:var(--primary);text-decoration:none}
+#app{display:flex;min-height:100vh;transition:zoom 0.2s ease}
+#sidebar{width:var(--sidebar-width);position:fixed;top:0;left:0;height:100vh;background:var(--card-bg);border-right:1px solid var(--border-light);box-shadow:2px 0 12px rgba(255,91,141,0.04);overflow-y:auto;z-index:100;padding:16px 0}
+.sidebar-logo{text-align:center;font-size:16px;font-weight:700;color:var(--primary);padding:8px 0 20px;border-bottom:1px solid var(--border-light);margin-bottom:8px}
+.nav-item{display:flex;align-items:center;gap:10px;padding:11px 18px;cursor:pointer;transition:all 0.2s;position:relative;color:var(--text)}
+.nav-item:hover{background:var(--primary-bg)}
+.nav-item.active{background:linear-gradient(90deg,var(--primary-bg),transparent);color:var(--primary);font-weight:600}
+.nav-item.active::before{content:'';position:absolute;left:0;top:0;bottom:0;width:4px;background:var(--primary);border-radius:0 4px 4px 0}
+.nav-icon{font-size:20px;flex-shrink:0}
+.nav-label{font-size:14px;white-space:nowrap}
+.nav-arrows{margin-left:auto;display:flex;gap:2px;opacity:0;transition:opacity 0.2s}
+.nav-item:hover .nav-arrows{opacity:1}
+.nav-arrows button{width:20px;height:20px;border:none;background:var(--primary-lighter);color:var(--primary);border-radius:4px;cursor:pointer;font-size:10px;display:flex;align-items:center;justify-content:center}
+.nav-arrows button:disabled{opacity:0.3;cursor:not-allowed}
+.nav-arrows button:hover:not(:disabled){background:var(--primary);color:white}
+#bottomtab{display:none;position:fixed;bottom:0;left:0;right:0;height:var(--bottom-tab-height);background:var(--card-bg);border-top:1px solid var(--border-light);box-shadow:0 -2px 12px rgba(255,91,141,0.06);z-index:100;overflow-x:auto;-webkit-overflow-scrolling:touch}
+.tab-item{flex-shrink:0;min-width:64px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:2px;cursor:pointer;color:var(--text-light);transition:color 0.2s;height:100%;padding:0 4px}
+.tab-item.active{color:var(--primary)}
+.tab-icon{font-size:18px}
+.tab-label{font-size:10px;white-space:nowrap}
+#main{margin-left:var(--sidebar-width);flex:1;min-width:0;display:flex;flex-direction:column}
+#topbar{background:var(--card-bg);padding:14px 20px;border-bottom:1px solid var(--border-light);display:flex;align-items:center;justify-content:space-between;position:sticky;top:0;z-index:50}
+.topbar-title{font-size:18px;font-weight:700;color:var(--text-dark)}
+.topbar-date{font-size:13px;color:var(--text-light)}
+#pages{flex:1;padding:16px;max-width:1200px;margin:0 auto;width:100%}
+.card{background:var(--card-bg);border-radius:var(--radius);padding:16px;box-shadow:var(--shadow);margin-bottom:12px;transition:box-shadow 0.2s}
+.card:hover{box-shadow:var(--shadow-hover)}
+.card-title{font-size:16px;font-weight:700;color:var(--text-dark);margin-bottom:12px;display:flex;align-items:center;gap:8px}
+.card-subtitle{font-size:13px;color:var(--text-light);margin-bottom:10px}
+.grid{display:grid;gap:12px;grid-template-columns:repeat(2,1fr);margin-bottom:12px}
+@media(min-width:768px){.grid{grid-template-columns:repeat(3,1fr)}}
+@media(min-width:1024px){.grid{grid-template-columns:repeat(4,1fr)}}
+.grid-card{background:var(--card-bg);border-radius:var(--radius);padding:14px;box-shadow:var(--shadow);cursor:pointer;transition:all 0.2s;display:flex;align-items:center;gap:10px}
+.grid-card:hover{box-shadow:var(--shadow-hover);transform:translateY(-2px)}
+.grid-card-icon{font-size:28px;flex-shrink:0;width:44px;height:44px;display:flex;align-items:center;justify-content:center;background:var(--primary-bg);border-radius:10px}
+.grid-card-text{flex:1;min-width:0}
+.grid-card-name{font-size:14px;font-weight:600;color:var(--text-dark);margin-bottom:2px}
+.grid-card-info{font-size:12px;color:var(--text-light)}
+.input,.textarea,.select{width:100%;padding:10px 14px;border:1.5px solid var(--border-light);border-radius:var(--radius-sm);background:#fafafa;font-size:14px;color:var(--text-dark);transition:border-color 0.2s,background 0.2s}
+.input:focus,.textarea:focus,.select:focus{border-color:var(--primary-light);background:white}
+.textarea{resize:vertical;min-height:80px;line-height:1.5}
+.input-group{margin-bottom:10px}
+.input-label{display:block;font-size:13px;color:var(--text);margin-bottom:4px;font-weight:500}
+.row{display:flex;gap:10px}
+.row>*{flex:1}
+.btn{padding:8px 16px;border:none;border-radius:var(--radius-sm);cursor:pointer;font-size:14px;font-weight:500;transition:all 0.2s;display:inline-flex;align-items:center;gap:6px}
+.btn-primary{background:var(--primary);color:white}
+.btn-primary:hover{background:#e8497b}
+.btn-outline{background:white;color:var(--primary);border:1.5px solid var(--primary)}
+.btn-outline:hover{background:var(--primary-bg)}
+.btn-ghost{background:transparent;color:var(--text-light)}
+.btn-ghost:hover{background:var(--bg)}
+.btn-sm{padding:4px 10px;font-size:12px}
+.btn-block{width:100%;justify-content:center}
+.btn-danger{background:#fff0f0;color:#e85050}
+.btn-danger:hover{background:#ffe0e0}
+.chips{display:flex;flex-wrap:wrap;gap:8px;margin-bottom:12px}
+.chip{padding:6px 14px;border-radius:20px;background:white;border:1.5px solid var(--border-light);color:var(--text);font-size:13px;cursor:pointer;transition:all 0.2s}
+.chip.active{background:var(--primary);color:white;border-color:var(--primary)}
+.chip:hover:not(.active){border-color:var(--primary-light);color:var(--primary)}
+.list-item{display:flex;align-items:flex-start;gap:10px;padding:12px;background:#fafafa;border-radius:var(--radius-sm);margin-bottom:8px;border:1px solid var(--border-light)}
+.list-item-content{flex:1;min-width:0}
+.list-item-title{font-size:14px;font-weight:600;color:var(--text-dark);margin-bottom:4px;word-break:break-word}
+.list-item-meta{font-size:12px;color:var(--text-light)}
+.delete-btn{width:28px;height:28px;border:none;background:transparent;color:#ccc;border-radius:6px;cursor:pointer;font-size:16px;display:flex;align-items:center;justify-content:center;flex-shrink:0;transition:all 0.2s}
+.delete-btn:hover{background:#fff0f0;color:#e85050}
+.badge{display:inline-block;padding:2px 8px;border-radius:10px;font-size:11px;font-weight:600}
+.badge-primary{background:var(--primary-lighter);color:var(--primary)}
+.badge-success{background:#d4f4d4;color:#2e8b2e}
+.badge-warning{background:#fff4d4;color:#d4a017}
+.badge-gray{background:#eee;color:#999}
+.overview-table{width:100%;border-collapse:collapse;font-size:13px;margin-bottom:12px}
+.overview-table th{background:var(--primary-bg);color:var(--primary);font-weight:600;padding:10px 12px;text-align:left;border-radius:8px 8px 0 0}
+.overview-table td{padding:10px 12px;border-bottom:1px solid var(--border-light);vertical-align:top}
+.overview-table tr:nth-child(even) td{background:#fafafa}
+.overview-table tr:hover td{background:var(--primary-bg)}
+.overview-table .section-name{font-weight:600;color:var(--text-dark);white-space:nowrap}
+.overview-cell{font-size:12px;color:var(--text);line-height:1.5}
+.overview-cell .item-tag{display:inline-block;background:var(--primary-lighter);color:var(--primary);padding:1px 8px;border-radius:4px;margin:2px 4px 2px 0;font-size:11px}
+@media(max-width:679px){.overview-table{font-size:12px}.overview-table th,.overview-table td{padding:6px 8px}}
+.two-col{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+@media(max-width:767px){.two-col{grid-template-columns:1fr}}
+.section-block{background:var(--card-bg);border-radius:var(--radius);padding:14px;box-shadow:var(--shadow);margin-bottom:12px}
+.section-block-title{font-size:15px;font-weight:700;color:var(--text-dark);margin-bottom:10px;display:flex;align-items:center;gap:8px}
+.section-block-title .edit-btn{margin-left:auto;font-size:12px;color:var(--text-light);cursor:pointer;background:none;border:none}
+.inline-edit{display:inline-block;padding:2px 8px;border:1.5px solid var(--border-light);border-radius:6px;font-size:13px;width:60px;text-align:center;background:#fafafa}
+.inline-edit:focus{border-color:var(--primary-light);background:white}
+#modal{position:fixed;top:0;left:0;right:0;bottom:0;z-index:200;display:none;align-items:center;justify-content:center;padding:20px}
+#modal.show{display:flex}
+.modal-overlay{position:absolute;top:0;left:0;right:0;bottom:0;background:rgba(0,0,0,0.35);backdrop-filter:blur(2px)}
+.modal-content{position:relative;background:white;border-radius:var(--radius);padding:20px;max-width:480px;width:100%;max-height:85vh;overflow-y:auto;box-shadow:0 20px 60px rgba(0,0,0,0.2);animation:modalIn 0.25s ease}
+@keyframes modalIn{from{transform:translateY(30px) scale(0.95);opacity:0}to{transform:translateY(0) scale(1);opacity:1}}
+.modal-title{font-size:18px;font-weight:700;color:var(--text-dark);margin-bottom:16px}
+.modal-actions{display:flex;gap:10px;margin-top:16px}
+.modal-actions .btn{flex:1;justify-content:center}
+.toggle{position:relative;width:44px;height:24px;background:#ddd;border-radius:12px;cursor:pointer;transition:background 0.2s;flex-shrink:0}
+.toggle.on{background:var(--primary)}
+.toggle::after{content:'';position:absolute;top:2px;left:2px;width:20px;height:20px;background:white;border-radius:50%;transition:transform 0.2s;box-shadow:0 2px 4px rgba(0,0,0,0.2)}
+.toggle.on::after{transform:translateX(20px)}
+.slider{-webkit-appearance:none;width:100%;height:6px;background:var(--border-light);border-radius:3px;outline:none}
+.slider::-webkit-slider-thumb{-webkit-appearance:none;width:20px;height:20px;background:var(--primary);border-radius:50%;cursor:pointer;box-shadow:0 2px 6px rgba(255,91,141,0.3)}
+.slider::-moz-range-thumb{width:20px;height:20px;background:var(--primary);border-radius:50%;cursor:pointer;border:none}
+.chart-container{background:var(--card-bg);border-radius:var(--radius);padding:14px;box-shadow:var(--shadow);margin-bottom:12px}
+.chart-svg{width:100%;height:auto}
+.chart-bar{fill:var(--primary);transition:opacity 0.2s}
+.chart-bar:hover{opacity:0.8}
+.chart-line{fill:none;stroke:var(--primary);stroke-width:2.5}
+.chart-area{fill:var(--primary-lighter);opacity:0.4}
+.chart-point{fill:var(--primary)}
+.chart-axis{stroke:var(--border-light);stroke-width:1}
+.chart-label{fill:var(--text-light);font-size:11px}
+.chart-value{fill:var(--text);font-size:11px;font-weight:600}
+.home-greeting{font-size:24px;font-weight:700;color:var(--text-dark);margin-bottom:4px}
+.home-date{font-size:14px;color:var(--text-light);margin-bottom:16px}
+.quote-card{background:linear-gradient(135deg,var(--primary) 0%,#ff8fab 100%);color:white;border-radius:var(--radius);padding:20px;margin-bottom:16px;position:relative;overflow:hidden}
+.quote-card::before{content:'"';position:absolute;top:-10px;right:10px;font-size:80px;opacity:0.15;font-family:Georgia,serif}
+.quote-text{font-size:16px;font-weight:500;line-height:1.6;position:relative;z-index:1}
+.quote-actions{display:flex;gap:8px;margin-top:10px}
+.quote-actions button{background:rgba(255,255,255,0.2);color:white;border:none;padding:4px 12px;border-radius:16px;font-size:12px;cursor:pointer;transition:background 0.2s}
+.quote-actions button:hover{background:rgba(255,255,255,0.35)}
+.checkin-btn{width:100%;padding:14px;border:none;border-radius:var(--radius);background:linear-gradient(135deg,var(--primary) 0%,#ff8fab 100%);color:white;font-size:16px;font-weight:600;cursor:pointer;transition:transform 0.15s;margin-bottom:16px}
+.checkin-btn:hover{transform:scale(1.02)}
+.checkin-btn:active{transform:scale(0.98)}
+.checkin-stats{text-align:center;font-size:14px;color:var(--text-light);margin-bottom:16px}
+.checkin-stats span{color:var(--primary);font-weight:700;font-size:18px}
+.confetti{position:fixed;top:0;left:0;width:100%;height:100%;pointer-events:none;z-index:300;overflow:hidden}
+.confetti-piece{position:absolute;width:10px;height:10px;border-radius:2px;animation:confettiFall 2.5s ease-out forwards}
+@keyframes confettiFall{0%{transform:translateY(-20px) rotate(0deg);opacity:1}100%{transform:translateY(100vh) rotate(720deg);opacity:0}}
+@media(prefers-reduced-motion:reduce){.confetti-piece{animation:none;display:none}*{animation-duration:0.01ms!important;transition-duration:0.01ms!important}}
+.tag{display:inline-flex;align-items:center;gap:4px;padding:3px 10px;border-radius:12px;font-size:12px;font-weight:500}
+.tag-primary{background:var(--primary-lighter);color:var(--primary)}
+.tag-success{background:#d4f4d4;color:#2e8b2e}
+.tag-warning{background:#fff4d4;color:#d4a017}
+.tag-gray{background:#eee;color:#999}
+.progress-bar{height:8px;background:var(--border-light);border-radius:4px;overflow:hidden;margin-top:4px}
+.progress-fill{height:100%;background:linear-gradient(90deg,var(--primary),var(--primary-light));border-radius:4px;transition:width 0.3s ease}
+.setting-row{display:flex;align-items:center;justify-content:space-between;padding:10px 0;border-bottom:1px solid var(--border-light)}
+.setting-row:last-child{border-bottom:none}
+.setting-label{font-size:14px;color:var(--text-dark);font-weight:500}
+.setting-desc{font-size:12px;color:var(--text-light);margin-top:2px}
+.font-preset-chips{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:10px}
+.nav-sort-item{display:flex;align-items:center;gap:10px;padding:10px 12px;background:#fafafa;border-radius:var(--radius-sm);margin-bottom:6px;border:1px solid var(--border-light)}
+.nav-sort-item .nav-sort-icon{font-size:20px}
+.nav-sort-item .nav-sort-label{flex:1;font-size:14px;color:var(--text-dark)}
+.nav-sort-btn{width:30px;height:30px;border:1.5px solid var(--border-light);background:white;border-radius:6px;cursor:pointer;font-size:12px;color:var(--primary);display:flex;align-items:center;justify-content:center}
+.nav-sort-btn:disabled{opacity:0.3;cursor:not-allowed}
+.nav-sort-btn:hover:not(:disabled){background:var(--primary-bg)}
+.stats-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:10px}
+.stat-item{text-align:center;padding:12px 8px;background:var(--primary-bg);border-radius:var(--radius-sm)}
+.stat-value{font-size:22px;font-weight:700;color:var(--primary)}
+.stat-label{font-size:12px;color:var(--text-light);margin-top:2px}
+@media(max-width:679px){.stats-grid{grid-template-columns:repeat(3,1fr)}}
+.review-item{background:var(--card-bg);border-radius:var(--radius);padding:14px;box-shadow:var(--shadow);margin-bottom:10px;border-left:4px solid var(--border-light)}
+.review-item.due{border-left-color:var(--primary)}
+.review-item.overdue{border-left-color:#e85050}
+.review-item.completed{border-left-color:#2e8b2e;opacity:0.7}
+.review-steps{display:flex;gap:4px;margin-top:8px}
+.review-step{flex:1;height:6px;border-radius:3px;background:var(--border-light)}
+.review-step.done{background:var(--primary)}
+.review-step.current{background:var(--primary-light);animation:pulse 1.5s infinite}
+@keyframes pulse{0%,100%{opacity:1}50%{opacity:0.5}}
+#toast{position:fixed;bottom:80px;left:50%;transform:translateX(-50%) translateY(20px);background:rgba(90,90,122,0.95);color:white;padding:10px 20px;border-radius:20px;font-size:14px;z-index:300;opacity:0;pointer-events:none;transition:all 0.3s;white-space:nowrap;max-width:90vw;overflow:hidden;text-overflow:ellipsis}
+#toast.show{opacity:1;transform:translateX(-50%) translateY(0)}
+@media(min-width:680px){#toast{bottom:30px}}
+.empty-state{text-align:center;padding:40px 20px;color:var(--text-light);font-size:14px}
+.empty-state-icon{font-size:48px;margin-bottom:12px;opacity:0.5}
+@media(max-width:679px){
+  #sidebar{display:none}
+  #main{margin-left:0}
+  #bottomtab{display:flex;align-items:center;padding:0 4px}
+  #pages{padding:12px;padding-bottom:calc(12px + var(--bottom-tab-height))}
+  .home-greeting{font-size:20px}
+  .topbar-title{font-size:16px}
+  .grid{grid-template-columns:repeat(2,1fr);gap:10px}
+}
+@media(min-width:680px) and (max-width:767px){.grid{grid-template-columns:repeat(3,1fr)}}
+.flex{display:flex}
+.flex-center{display:flex;align-items:center}
+.flex-between{display:flex;align-items:center;justify-content:space-between}
+.gap-8{gap:8px}
+.gap-12{gap:12px}
+.mt-8{margin-top:8px}
+.mt-12{margin-top:12px}
+.mt-16{margin-top:16px}
+.mb-8{margin-bottom:8px}
+.mb-12{margin-bottom:12px}
+.mb-16{margin-bottom:16px}
+.text-sm{font-size:13px}
+.text-xs{font-size:12px}
+.text-light{color:var(--text-light)}
+.text-primary{color:var(--primary)}
+.text-center{text-align:center}
+.hidden{display:none!important}
+.flex-wrap{flex-wrap:wrap}
+</style>
+</head>
+<body>
+<div id="app">
+  <nav id="sidebar"></nav>
+  <main id="main">
+    <header id="topbar">
+      <span class="topbar-title" id="pageTitle">🎀 Winnie上岸吧</span>
+      <span class="topbar-date" id="topbarDate"></span>
+    </header>
+    <div id="pages"></div>
+  </main>
+  <nav id="bottomtab"></nav>
+</div>
+<div id="modal"></div>
+<div id="toast"></div>
+<script>
+"use strict";
+
+// ============ Constants ============
+var STORAGE_KEY = "winnie_data_v1";
+var AUTH_KEY = "winnie_auth_v1";
+
+var DEFAULT_NAV = [
+  { id: "home", icon: "🏠", label: "主页", type: "builtin" },
+  { id: "sections", icon: "📚", label: "板块", type: "builtin" },
+  { id: "study", icon: "📒", label: "学习记录", type: "builtin" },
+  { id: "experience", icon: "💡", label: "经验贴整理", type: "builtin" },
+  { id: "review", icon: "🔁", label: "复习", type: "builtin" },
+  { id: "wrong", icon: "❌", label: "错题", type: "builtin" },
+  { id: "exam", icon: "📝", label: "试卷", type: "builtin" },
+  { id: "settings", icon: "⚙️", label: "我的", type: "builtin" }
+];
+
+var DEFAULT_SECTIONS = [
+  "言语理解","逻辑推理","数量关系","资料分析","政治和常识","综应","申论"
+];
+
+var DEFAULT_SUBJECTS = [
+  { id: "sub1", icon: "📖", name: "言语理解" },
+  { id: "sub2", icon: "🧩", name: "逻辑推理" },
+  { id: "sub3", icon: "🔢", name: "数量关系" },
+  { id: "sub4", icon: "📊", name: "资料分析" },
+  { id: "sub5", icon: "🏛️", name: "政治常识" },
+  { id: "sub6", icon: "⚖️", name: "判断推理" },
+  { id: "sub7", icon: "🌍", name: "常识判断" },
+  { id: "sub8", icon: "✍️", name: "申论" }
+];
+
+var DAILY_QUOTES = [
+  "每一个今天的努力，都是明天的底气。",
+  "公考路上，坚持就是最好的策略。",
+  "星光不问赶路人，时光不负有心人。",
+  "你背不下来的书，总有人能背下来；你做不出的题，总有人能做出来。",
+  "慢慢来，比较快。",
+  "既然选择了远方，便只顾风雨兼程。",
+  "最暗的夜，才能看见最美的星。",
+  "你只管努力，剩下的交给时间。",
+  "备考就像在黑屋里洗衣服，没开灯前不知道洗干净了没，只能一遍遍搓。",
+  "种一棵树最好的时间是十年前，其次是现在。",
+  "当你觉得晚了的时候，恰恰是最早的时候。",
+  "上岸不是终点，而是新的起点。",
+  "刷题千道，不如总结一道。",
+  "错题是最好的老师，它告诉你哪里还需补强。",
+  "每天进步一点点，公考上岸在眼前。",
+  "行百里者半九十，坚持到最后才是赢家。"
+];
+
+var REVIEW_INTERVALS = [1, 2, 4, 7, 15, 30];
+
+// ============ State ============
+var state = {};
+var auth = {};
+var currentPage = "home";
+var saveTimer = null;
+var expActiveSection = 0;
+var subjectActiveSection = 0;
+var wrongFilter = "";
+var wrongShowMastered = false;
+
+function defaultState() {
+  return {
+    nav: JSON.parse(JSON.stringify(DEFAULT_NAV)),
+    studySections: DEFAULT_SECTIONS.map(function(n) {
+      return { id: uid(), name: n, listening: [], exerciseBooks: [] };
+    }),
+    expSections: DEFAULT_SECTIONS.map(function(n) {
+      return { id: uid(), name: n, rawText: "", keyPoints: [] };
+    }),
+    subjects: JSON.parse(JSON.stringify(DEFAULT_SUBJECTS)),
+    subjectStats: {},
+    wrongAnswers: [],
+    examScores: [],
+    reviewItems: [],
+    checkins: [],
+    examCountdowns: [],
+    settings: {
+      fontSize: 100,
+      aiEnabled: false,
+      aiBaseUrl: "https://api.deepseek.com/v1",
+      aiModel: "deepseek-chat",
+      aiApiKey: "",
+      syncServer: ""
+    },
+    updatedAt: 0
+  };
+}
+
+function loadState() {
+  try {
+    var raw = localStorage.getItem(STORAGE_KEY);
+    if (raw) {
+      state = JSON.parse(raw);
+      var def = defaultState();
+      for (var k in def) {
+        if (state[k] === undefined) state[k] = def[k];
+      }
+      if (!state.settings) state.settings = def.settings;
+      for (var sk in def.settings) {
+        if (state.settings[sk] === undefined) state.settings[sk] = def.settings[sk];
+      }
+      if (!state.nav || state.nav.length === 0) state.nav = def.nav;
+    } else {
+      state = defaultState();
+    }
+  } catch(e) { state = defaultState(); }
+}
+
+function loadAuth() {
+  try {
+    auth = JSON.parse(localStorage.getItem(AUTH_KEY)) || {};
+  } catch(e) { auth = {}; }
+}
+
+function save() {
+  if (saveTimer) clearTimeout(saveTimer);
+  saveTimer = setTimeout(function() {
+    state.updatedAt = Date.now();
+    localStorage.setItem(STORAGE_KEY, JSON.stringify(state));
+    if (auth.token) syncPush();
+  }, 1200);
+}
+
+function saveNow() {
+  if (saveTimer) clearTimeout(saveTimer);
+  state.updatedAt = Date.now();
+  localStorage.setItem(STORAGE_KEY, JSON.stringify(state));
+}
+
+function saveAuth() {
+  localStorage.setItem(AUTH_KEY, JSON.stringify(auth));
+}
+
+// ============ Utilities ============
+function uid() {
+  return Date.now().toString(36) + Math.random().toString(36).substr(2, 5);
+}
+
+function todayStr() {
+  var d = new Date();
+  return d.getFullYear() + "-" + String(d.getMonth()+1).padStart(2,"0") + "-" + String(d.getDate()).padStart(2,"0");
+}
+
+function formatDate(d) {
+  var dt = new Date(d);
+  return dt.getFullYear() + "-" + String(dt.getMonth()+1).padStart(2,"0") + "-" + String(dt.getDate()).padStart(2,"0");
+}
+
+function addDays(date, n) {
+  var d = new Date(date);
+  d.setDate(d.getDate() + n);
+  return formatDate(d);
+}
+
+function daysBetween(d1, d2) {
+  return Math.floor(Math.abs(new Date(d2) - new Date(d1)) / 86400000);
+}
+
+function showToast(msg) {
+  var t = document.getElementById("toast");
+  t.textContent = msg;
+  t.classList.add("show");
+  setTimeout(function() { t.classList.remove("show"); }, 2500);
+}
+
+function esc(s) {
+  if (!s) return "";
+  return String(s).replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;").replace(/"/g,"&quot;");
+}
+
+// ============ Modal ============
+function openModal(title, bodyHTML, actions) {
+  var modal = document.getElementById("modal");
+  modal.innerHTML =
+    '<div class="modal-overlay" onclick="closeModal()"></div>' +
+    '<div class="modal-content">' +
+    '<div class="modal-title">' + esc(title) + '</div>' +
+    bodyHTML +
+    '<div class="modal-actions">' + actions + '</div>' +
+    '</div>';
+  modal.classList.add("show");
+}
+
+function closeModal() {
+  var modal = document.getElementById("modal");
+  modal.classList.remove("show");
+  modal.innerHTML = "";
+}
+
+// ============ Navigation ============
+function renderNav() {
+  var nav = state.nav;
+  var sb = '<div class="sidebar-logo">🎀 Winnie</div>';
+  nav.forEach(function(item, i) {
+    sb += '<div class="nav-item ' + (currentPage === item.id ? "active" : "") + '" data-page="' + item.id + '">' +
+      '<span class="nav-icon">' + item.icon + '</span>' +
+      '<span class="nav-label">' + esc(item.label) + '</span>' +
+      '<div class="nav-arrows">' +
+      '<button onclick="event.stopPropagation();moveNav(' + i + ',-1)" ' + (i === 0 ? 'disabled' : '') + '>▲</button>' +
+      '<button onclick="event.stopPropagation();moveNav(' + i + ',1)" ' + (i === nav.length-1 ? 'disabled' : '') + '>▼</button>' +
+      '</div></div>';
+  });
+  document.getElementById("sidebar").innerHTML = sb;
+
+  var bt = nav.map(function(item) {
+    return '<div class="tab-item ' + (currentPage === item.id ? "active" : "") + '" data-page="' + item.id + '">' +
+      '<span class="tab-icon">' + item.icon + '</span>' +
+      '<span class="tab-label">' + esc(item.label) + '</span></div>';
+  }).join("");
+  document.getElementById("bottomtab").innerHTML = bt;
+
+  document.querySelectorAll(".nav-item, .tab-item").forEach(function(el) {
+    el.addEventListener("click", function(e) {
+      if (e.target.tagName === "BUTTON") return;
+      switchPage(el.dataset.page);
+    });
+  });
+}
+
+function moveNav(index, dir) {
+  var ni = index + dir;
+  if (ni < 0 || ni >= state.nav.length) return;
+  var tmp = state.nav[index];
+  state.nav[index] = state.nav[ni];
+  state.nav[ni] = tmp;
+  save();
+  renderNav();
+  showToast("导航顺序已调整");
+}
+
+function switchPage(pageId) {
+  currentPage = pageId;
+  renderNav();
+  renderPage();
+  var item = state.nav.find(function(n) { return n.id === pageId; });
+  document.getElementById("pageTitle").textContent = item ? item.icon + " " + item.label : "🎀 Winnie上岸吧";
+  window.scrollTo(0, 0);
+}
+
+function renderPage() {
+  var pages = document.getElementById("pages");
+  var p = currentPage;
+  if (p === "home") pages.innerHTML = renderHome();
+  else if (p === "sections") pages.innerHTML = renderSections();
+  else if (p === "study") pages.innerHTML = renderStudy();
+  else if (p === "experience") pages.innerHTML = renderExperience();
+  else if (p === "review") pages.innerHTML = renderReview();
+  else if (p === "wrong") pages.innerHTML = renderWrong();
+  else if (p === "exam") pages.innerHTML = renderExam();
+  else if (p === "settings") pages.innerHTML = renderSettings();
+  else {
+    var item = state.nav.find(function(n) { return n.id === p; });
+    if (item && item.type === "custom") pages.innerHTML = renderCustomNote(item);
+    else pages.innerHTML = '<div class="empty-state"><div class="empty-state-icon">🎀</div>页面建设中...</div>';
+  }
+  var now = new Date();
+  var wd = ["日","一","二","三","四","五","六"];
+  document.getElementById("topbarDate").textContent = (now.getMonth()+1) + "月" + now.getDate() + "日 周" + wd[now.getDay()];
+}
+
+// ============ Home ============
+function renderHome() {
+  var h = new Date().getHours();
+  var greeting = h < 6 ? "夜深了，注意休息哦" : h < 11 ? "早上好，元气满满的一天！" : h < 14 ? "中午好，记得午休一下" : h < 18 ? "下午好，继续加油！" : h < 22 ? "晚上好，今日辛苦啦" : "夜深了，注意休息哦";
+  var today = todayStr();
+  var qIdx = new Date().getDate() % DAILY_QUOTES.length;
+  var quote = DAILY_QUOTES[qIdx];
+  var isFav = state.checkins.some(function(c) { return c.date === today; });
+  var streak = calcStreak();
+
+  var entries = state.nav.filter(function(n) { return n.id !== "home"; }).slice(0, 8);
+  var html = '<div class="home-greeting">' + greeting + '</div>';
+  html += '<div class="home-date">' + new Date().toLocaleDateString("zh-CN", {year:"numeric",month:"long",day:"numeric",weekday:"long"}) + '</div>';
+  html += '<div class="quote-card"><div class="quote-text">' + esc(quote) + '</div>';
+  html += '<div class="quote-actions"><button onclick="toggleFavQuote()">⭐ 收藏</button><button onclick="nextQuote()">🔄 换一句</button></div></div>';
+  html += '<button class="checkin-btn" onclick="checkin()">📅 今日打卡' + (isFav ? ' ✓' : '') + '</button>';
+  html += '<div class="checkin-stats">已连续打卡 <span>' + streak + '</span> 天 | 累计 <span>' + state.checkins.length + '</span> 天</div>';
+  html += renderExamCountdowns();
+  html += '<div class="card"><div class="card-title">🚀 快捷入口</div><div class="grid">';
+  entries.forEach(function(item) {
+    html += '<div class="grid-card" onclick="switchPage(\'' + item.id + '\')"><div class="grid-card-icon">' + item.icon + '</div><div class="grid-card-text"><div class="grid-card-name">' + esc(item.label) + '</div><div class="grid-card-info">点击进入</div></div></div>';
+  });
+  html += '</div></div>';
+  html += '<div class="card"><div class="card-title">📊 数据概览</div><div class="stats-grid">';
+  html += '<div class="stat-item"><div class="stat-value">' + state.wrongAnswers.length + '</div><div class="stat-label">错题</div></div>';
+  html += '<div class="stat-item"><div class="stat-value">' + state.reviewItems.length + '</div><div class="stat-label">复习项</div></div>';
+  html += '<div class="stat-item"><div class="stat-value">' + state.examScores.length + '</div><div class="stat-label">模考</div></div>';
+  html += '<div class="stat-item"><div class="stat-value">' + countStudyRecords() + '</div><div class="stat-label">学习记录</div></div>';
+  html += '<div class="stat-item"><div class="stat-value">' + countKeyPoints() + '</div><div class="stat-label">重点提炼</div></div>';
+  html += '<div class="stat-item"><div class="stat-value">' + streak + '</div><div class="stat-label">连续打卡</div></div>';
+  html += '</div></div>';
+  return html;
+}
+
+function renderExamCountdowns() {
+  var list = state.examCountdowns || [];
+  var today = todayStr();
+  var html = '<div class="card"><div class="card-title">⏰ 考试倒计时';
+  html += '<button class="edit-btn" onclick="addExamCountdown()" style="margin-left:auto;font-size:12px;color:var(--primary);background:none;border:none;cursor:pointer;">＋ 添加</button></div>';
+  if (!list.length) {
+    html += '<div class="empty-state" style="padding:20px;"><div class="empty-state-icon" style="font-size:36px;">⏰</div>还没有设置考试倒计时<br>点击「添加」设置你的目标考试日期</div>';
+  } else {
+    // Sort by date ascending
+    var sorted = list.slice().sort(function(a,b) { return a.date < b.date ? -1 : (a.date > b.date ? 1 : 0); });
+    sorted.forEach(function(item) {
+      var days = Math.ceil((new Date(item.date) - new Date(today)) / 86400000);
+      var isPast = days < 0;
+      var isToday = days === 0;
+      var bgGradient = isPast ? 'linear-gradient(135deg,#ccc 0%,#ddd 100%)' :
+        (isToday ? 'linear-gradient(135deg,#ff5b8d 0%,#ff8fab 100%)' :
+        'linear-gradient(135deg,#ff5b8d 0%,#ff8fab 100%)');
+      var dayLabel = isPast ? '已结束' : (isToday ? '今天考试！' : '还剩 ' + days + ' 天');
+      var dayNum = isPast ? '' : '<span style="font-size:28px;font-weight:800;">' + days + '</span><span style="font-size:13px;opacity:0.9;"> 天</span>';
+      html += '<div style="background:' + bgGradient + ';color:white;border-radius:14px;padding:16px;margin-bottom:10px;display:flex;align-items:center;gap:12px;position:relative;overflow:hidden;">';
+      html += '<div style="flex:1;"><div style="font-size:15px;font-weight:600;margin-bottom:4px;">' + esc(item.name) + '</div>';
+      html += '<div style="font-size:12px;opacity:0.85;">' + esc(item.date) + (item.note ? ' · ' + esc(item.note) : '') + '</div></div>';
+      if (!isPast) html += '<div style="text-align:center;min-width:70px;">' + dayNum + '</div>';
+      else html += '<div style="font-size:14px;font-weight:600;opacity:0.8;">已结束</div>';
+      html += '<button onclick="deleteExamCountdown(\'' + item.id + '\')" style="position:absolute;top:6px;right:6px;background:rgba(255,255,255,0.25);border:none;color:white;width:24px;height:24px;border-radius:50%;cursor:pointer;font-size:12px;display:flex;align-items:center;justify-content:center;">✕</button>';
+      html += '</div>';
+    });
+  }
+  html += '</div>';
+  return html;
+}
+
+function addExamCountdown() {
+  openModal("添加考试倒计时",
+    '<div class="input-group"><label class="input-label">考试名称</label><input type="text" class="input" id="cdName" placeholder="如：2027国考"></div>' +
+    '<div class="input-group"><label class="input-label">考试日期</label><input type="date" class="input" id="cdDate" value="' + todayStr() + '"></div>' +
+    '<div class="input-group"><label class="input-label">备注（可选）</label><input type="text" class="input" id="cdNote" placeholder="如：上午行测 下午申论"></div>',
+    '<button class="btn btn-ghost" onclick="closeModal()">取消</button><button class="btn btn-primary" onclick="confirmAddExamCountdown()">添加</button>');
+  setTimeout(function() { document.getElementById("cdName").focus(); }, 100);
+}
+
+function confirmAddExamCountdown() {
+  var name = document.getElementById("cdName").value.trim();
+  var date = document.getElementById("cdDate").value;
+  var note = document.getElementById("cdNote").value.trim();
+  if (!name) { showToast("请输入考试名称"); return; }
+  if (!date) { showToast("请选择考试日期"); return; }
+  if (!state.examCountdowns) state.examCountdowns = [];
+  state.examCountdowns.push({ id: uid(), name: name, date: date, note: note });
+  save();
+  closeModal();
+  renderPage();
+  showToast("倒计时已添加");
+}
+
+function deleteExamCountdown(id) {
+  if (!confirm("确定删除这个考试倒计时吗？")) return;
+  state.examCountdowns = state.examCountdowns.filter(function(x) { return x.id !== id; });
+  save();
+  renderPage();
+}
+
+function calcStreak() {
+  if (!state.checkins.length) return 0;
+  var dates = state.checkins.map(function(c) { return c.date; }).sort();
+  var streak = 0;
+  var today = todayStr();
+  var checkDate = dates[dates.length-1] === today ? today : (dates[dates.length-1] === addDays(today,-1) ? addDays(today,-1) : null);
+  if (!checkDate) return 0;
+  for (var i = dates.length - 1; i >= 0; i--) {
+    if (dates[i] === checkDate) { streak++; checkDate = addDays(checkDate, -1); }
+    else if (dates[i] < checkDate) break;
+  }
+  return streak;
+}
+
+function countStudyRecords() {
+  var c = 0;
+  state.studySections.forEach(function(s) { c += s.listening.length + s.exerciseBooks.length; });
+  return c;
+}
+
+function countKeyPoints() {
+  var c = 0;
+  state.expSections.forEach(function(s) { c += s.keyPoints.length; });
+  return c;
+}
+
+function checkin() {
+  var today = todayStr();
+  if (state.checkins.find(function(c) { return c.date === today; })) {
+    showToast("今天已经打卡过了哦～");
+    return;
+  }
+  state.checkins.push({ date: today, time: Date.now() });
+  save();
+  showToast("打卡成功！继续加油～");
+  fireConfetti();
+  renderPage();
+}
+
+function toggleFavQuote() { showToast("已收藏今日金句"); }
+function nextQuote() {
+  var idx = Math.floor(Math.random() * DAILY_QUOTES.length);
+  showToast(DAILY_QUOTES[idx]);
+}
+
+function fireConfetti() {
+  if (window.matchMedia && window.matchMedia("(prefers-reduced-motion: reduce)").matches) return;
+  var c = document.createElement("div");
+  c.className = "confetti";
+  var colors = ["#ff5b8d","#ff8fab","#ffd6e3","#a8e6cf","#ffd3b6","#d4f4d4"];
+  for (var i = 0; i < 50; i++) {
+    var p = document.createElement("div");
+    p.className = "confetti-piece";
+    p.style.left = Math.random()*100 + "%";
+    p.style.background = colors[Math.floor(Math.random()*colors.length)];
+    p.style.animationDelay = Math.random()*0.5 + "s";
+    p.style.animationDuration = (2+Math.random()) + "s";
+    if (Math.random() > 0.5) p.style.borderRadius = "50%";
+    c.appendChild(p);
+  }
+  document.body.appendChild(c);
+  setTimeout(function() { c.remove(); }, 3500);
+}
+
+// ============ Sections ============
+function renderSections() {
+  var subs = state.subjects;
+  var html = '<div class="card"><div class="card-title">📚 板块刷题</div>';
+  html += '<div class="card-subtitle">点击板块记录今日刷题量</div><div class="grid">';
+  subs.forEach(function(sub, i) {
+    html += '<div class="grid-card" onclick="selectSubject(' + i + ')"><div class="grid-card-icon">' + sub.icon + '</div><div class="grid-card-text"><div class="grid-card-name">' + esc(sub.name) + '</div><div class="grid-card-info">今日: ' + getSubjectToday(sub.id) + ' | 本周: ' + getSubjectWeek(sub.id) + '</div></div></div>';
+  });
+  html += '</div></div>';
+
+  var active = subs[subjectActiveSection] || subs[0];
+  if (active) {
+    html += '<div class="chips">';
+    subs.forEach(function(sub, i) {
+      html += '<div class="chip ' + (i === subjectActiveSection ? "active" : "") + '" onclick="selectSubject(' + i + ')">' + sub.icon + ' ' + esc(sub.name) + '</div>';
+    });
+    html += '</div>';
+    html += '<div class="two-col">';
+    html += '<div class="section-block"><div class="section-block-title">📝 今日刷题</div>';
+    html += '<div class="input-group"><label class="input-label">板块：' + active.icon + ' ' + esc(active.name) + '</label>';
+    html += '<div class="row"><input type="number" class="input" id="subjectCount" placeholder="题数" min="0"><button class="btn btn-primary" onclick="addSubjectStat(\'' + active.id + '\')">记录</button></div></div>';
+    html += '<div class="card-subtitle">今日已刷：' + getSubjectToday(active.id) + ' 题</div></div>';
+    html += '<div class="section-block"><div class="section-block-title">📈 近7天统计</div>' + renderSubjectChart(active.id) + '</div>';
+    html += '</div>';
+  }
+  return html;
+}
+
+function selectSubject(i) { subjectActiveSection = i; renderPage(); }
+
+function getSubjectToday(sid) {
+  var stats = state.subjectStats[sid] || [];
+  var t = stats.find(function(s) { return s.date === todayStr(); });
+  return t ? t.count : 0;
+}
+
+function getSubjectWeek(sid) {
+  var stats = state.subjectStats[sid] || [];
+  var total = 0;
+  for (var i = 1; i <= 7; i++) {
+    var d = addDays(todayStr(), -i);
+    var s = stats.find(function(x) { return x.date === d; });
+    if (s) total += s.count;
+  }
+  return total;
+}
+
+function addSubjectStat(sid) {
+  var input = document.getElementById("subjectCount");
+  var count = parseInt(input.value);
+  if (!count || count < 0) { showToast("请输入有效题数"); return; }
+  var today = todayStr();
+  if (!state.subjectStats[sid]) state.subjectStats[sid] = [];
+  var ex = state.subjectStats[sid].find(function(s) { return s.date === today; });
+  if (ex) ex.count += count;
+  else state.subjectStats[sid].push({ date: today, count: count });
+  save();
+  showToast("已记录 " + count + " 题！");
+  renderPage();
+}
+
+function renderSubjectChart(sid) {
+  var stats = state.subjectStats[sid] || [];
+  var data = [];
+  for (var i = 6; i >= 0; i--) {
+    var d = addDays(todayStr(), -i);
+    var s = stats.find(function(x) { return x.date === d; });
+    data.push({ date: d, count: s ? s.count : 0 });
+  }
+  return createBarChart(data);
+}
+
+function createBarChart(data) {
+  var w = 320, h = 180, pad = 30;
+  var max = Math.max.apply(Math, data.map(function(d) { return d.count; }).concat([10]));
+  var barW = (w - pad*2) / data.length * 0.6;
+  var gap = (w - pad*2) / data.length;
+  var bars = data.map(function(d, i) {
+    var bh = max > 0 ? (d.count / max) * (h - pad*2) : 0;
+    var x = pad + i*gap + (gap-barW)/2;
+    var y = h - pad - bh;
+    var s = '<rect class="chart-bar" x="' + x + '" y="' + y + '" width="' + barW + '" height="' + (bh||1) + '" rx="3"/>';
+    if (d.count > 0) s += '<text class="chart-value" x="' + (x+barW/2) + '" y="' + (y-5) + '" text-anchor="middle">' + d.count + '</text>';
+    s += '<text class="chart-label" x="' + (x+barW/2) + '" y="' + (h-pad+14) + '" text-anchor="middle">' + d.date.slice(5) + '</text>';
+    return s;
+  }).join("");
+  return '<svg class="chart-svg" viewBox="0 0 ' + w + ' ' + h + '"><line class="chart-axis" x1="' + pad + '" y1="' + (h-pad) + '" x2="' + (w-pad) + '" y2="' + (h-pad) + '"/>' + bars + '</svg>';
+}
+
+function createLineChart(data, labelKey, valueKeys) {
+  if (!data.length) return '<div class="empty-state"><div class="empty-state-icon">📊</div>暂无数据</div>';
+  var w = 340, h = 200, pad = 35;
+  var allV = [];
+  data.forEach(function(d) { valueKeys.forEach(function(vk) { allV.push(d[vk.key] || 0); }); });
+  var max = Math.max.apply(Math, allV.concat([100]));
+  var min = Math.min.apply(Math, allV.concat([0]));
+  var range = max - min || 1;
+  var cW = w - pad*2, cH = h - pad*2;
+  var colors = ["#ff5b8d", "#7ec8e3", "#a8e6cf"];
+  var lines = valueKeys.map(function(vk, vi) {
+    var color = colors[vi % colors.length];
+    var pts = data.map(function(d, i) {
+      var x = pad + (data.length === 1 ? cW/2 : (i/(data.length-1))*cW);
+      var y = pad + (1-((d[vk.key]||0)-min)/range)*cH;
+      return x + "," + y;
+    }).join(" ");
+    var dots = data.map(function(d, i) {
+      var x = pad + (data.length === 1 ? cW/2 : (i/(data.length-1))*cW);
+      var y = pad + (1-((d[vk.key]||0)-min)/range)*cH;
+      return '<circle cx="' + x + '" cy="' + y + '" r="4" fill="' + color + '"/><text class="chart-value" x="' + x + '" y="' + (y-8) + '" text-anchor="middle">' + (d[vk.key]||0) + '</text>';
+    }).join("");
+    return '<polyline points="' + pts + '" fill="none" stroke="' + color + '" stroke-width="2.5" stroke-linejoin="round"/>' + dots;
+  }).join("");
+  var xLab = data.map(function(d, i) {
+    var x = pad + (data.length === 1 ? cW/2 : (i/(data.length-1))*cW);
+    return '<text class="chart-label" x="' + x + '" y="' + (h-pad+14) + '" text-anchor="middle">' + esc(String(d[labelKey]||"").slice(5)) + '</text>';
+  }).join("");
+  var legend = valueKeys.map(function(vk, vi) {
+    var c = colors[vi % colors.length];
+    return '<rect x="' + (w-100) + '" y="' + (10+vi*16) + '" width="10" height="10" fill="' + c + '" rx="2"/><text class="chart-label" x="' + (w-85) + '" y="' + (19+vi*16) + '">' + esc(vk.label) + '</text>';
+  }).join("");
+  return '<svg class="chart-svg" viewBox="0 0 ' + w + ' ' + h + '"><line class="chart-axis" x1="' + pad + '" y1="' + (h-pad) + '" x2="' + (w-pad) + '" y2="' + (h-pad) + '"/>' + lines + xLab + legend + '</svg>';
+}
+
+// ============ Study Records ============
+function renderStudy() {
+  var secs = state.studySections;
+  var html = '<div class="card"><div class="card-title">📋 学习总览</div>';
+  if (!secs.length) {
+    html += '<div class="empty-state"><div class="empty-state-icon">📒</div>暂无板块</div>';
+  } else {
+    html += '<div style="overflow-x:auto"><table class="overview-table"><thead><tr><th>板块</th><th>🎧 听课进度</th><th>📚 习题册</th></tr></thead><tbody>';
+    secs.forEach(function(s) {
+      html += '<tr><td class="section-name">' + esc(s.name) + '</td><td>';
+      if (!s.listening.length) html += '<span class="overview-cell text-light">暂无</span>';
+      else {
+        html += '<div class="overview-cell">';
+        s.listening.forEach(function(l) {
+          html += '<span class="item-tag">' + esc(l.content) + (l.progress ? ' (' + esc(l.progress) + ')' : '') + '</span>';
+        });
+        html += '</div>';
+      }
+      html += '</td><td>';
+      if (!s.exerciseBooks.length) html += '<span class="overview-cell text-light">暂无</span>';
+      else {
+        html += '<div class="overview-cell">';
+        s.exerciseBooks.forEach(function(b) {
+          html += '<span class="item-tag">' + esc(b.name) + ' (' + esc(b.progress || "0") + '题)</span>';
+        });
+        html += '</div>';
+      }
+      html += '</td></tr>';
+    });
+    html += '</tbody></table></div>';
+  }
+  html += '</div>';
+  html += '<button class="btn btn-outline btn-block mb-12" onclick="addStudySection()">＋ 添加板块</button>';
+
+  secs.forEach(function(s, i) {
+    html += '<div class="section-block"><div class="section-block-title"><span>' + esc(s.name) + '</span>';
+    html += '<button class="edit-btn" onclick="renameStudySection(' + i + ')">✏️ 重命名</button>';
+    html += '<button class="edit-btn" onclick="deleteStudySection(' + i + ')" style="color:#e85050;margin-left:8px;">🗑 删除</button></div>';
+
+    // Listening
+    html += '<div style="margin-bottom:12px;"><div class="card-subtitle">🎧 听课进度</div>';
+    s.listening.forEach(function(l, li) {
+      html += '<div class="list-item"><div class="list-item-content"><div class="list-item-title">' + esc(l.content) + '</div><div class="list-item-meta">' + (l.progress ? '进度: ' + esc(l.progress) + ' · ' : '') + esc(l.date || '') + '</div></div><button class="delete-btn" onclick="deleteListening(' + i + ',' + li + ')">✕</button></div>';
+    });
+    html += '<button class="btn btn-outline btn-sm" onclick="addListening(' + i + ')">＋ 添加听课记录</button></div>';
+
+    // Exercise books
+    html += '<div><div class="card-subtitle">📚 习题册</div>';
+    s.exerciseBooks.forEach(function(b, bi) {
+      html += '<div class="list-item"><div class="list-item-content"><div class="list-item-title">' + esc(b.name) + '</div><div class="list-item-meta">进度: <input class="inline-edit" type="text" value="' + esc(b.progress || "0") + '" onchange="updateBookProgress(' + i + ',' + bi + ',this.value)" onclick="event.stopPropagation()"> 题</div></div><button class="delete-btn" onclick="deleteBook(' + i + ',' + bi + ')">✕</button></div>';
+    });
+    html += '<button class="btn btn-outline btn-sm" onclick="addBook(' + i + ')">＋ 添加习题册</button></div>';
+    html += '</div>';
+  });
+  return html;
+}
+
+function addStudySection() {
+  openModal("添加板块", '<div class="input-group"><label class="input-label">板块名称</label><input type="text" class="input" id="newSectionName" placeholder="如：数量关系"></div>',
+    '<button class="btn btn-ghost" onclick="closeModal()">取消</button><button class="btn btn-primary" onclick="confirmAddStudy()">添加</button>');
+  setTimeout(function() { document.getElementById("newSectionName").focus(); }, 100);
+}
+
+function confirmAddStudy() {
+  var name = document.getElementById("newSectionName").value.trim();
+  if (!name) { showToast("请输入板块名称"); return; }
+  state.studySections.push({ id: uid(), name: name, listening: [], exerciseBooks: [] });
+  save(); closeModal(); renderPage(); showToast("板块已添加");
+}
+
+function renameStudySection(i) {
+  openModal("重命名板块", '<div class="input-group"><label class="input-label">板块名称</label><input type="text" class="input" id="renameInput" value="' + esc(state.studySections[i].name) + '"></div>',
+    '<button class="btn btn-ghost" onclick="closeModal()">取消</button><button class="btn btn-primary" onclick="confirmRenameStudy(' + i + ')">保存</button>');
+  setTimeout(function() { document.getElementById("renameInput").focus(); }, 100);
+}
+
+function confirmRenameStudy(i) {
+  var name = document.getElementById("renameInput").value.trim();
+  if (!name) return;
+  state.studySections[i].name = name; save(); closeModal(); renderPage();
+}
+
+function deleteStudySection(i) {
+  if (!confirm("确定删除这个板块吗？")) return;
+  state.studySections.splice(i, 1); save(); renderPage(); showToast("板块已删除");
+}
+
+function addListening(i) {
+  openModal("添加听课记录",
+    '<div class="input-group"><label class="input-label">听课内容</label><textarea class="textarea" id="listeningContent" placeholder="如：言语理解-片段阅读技巧"></textarea></div>' +
+    '<div class="input-group"><label class="input-label">进度（可选）</label><input type="text" class="input" id="listeningProgress" placeholder="如：3/10 或 已完成"></div>' +
+    '<div class="input-group"><label class="input-label">日期</label><input type="date" class="input" id="listeningDate" value="' + todayStr() + '"></div>',
+    '<button class="btn btn-ghost" onclick="closeModal()">取消</button><button class="btn btn-primary" onclick="confirmAddListening(' + i + ')">添加</button>');
+  setTimeout(function() { document.getElementById("listeningContent").focus(); }, 100);
+}
+
+function confirmAddListening(i) {
+  var content = document.getElementById("listeningContent").value.trim();
+  if (!content) { showToast("请输入听课内容"); return; }
+  state.studySections[i].listening.push({ id: uid(), content: content, progress: document.getElementById("listeningProgress").value.trim(), date: document.getElementById("listeningDate").value });
+  save(); closeModal(); renderPage();
+}
+
+function deleteListening(si, li) {
+  state.studySections[si].listening.splice(li, 1); save(); renderPage();
+}
+
+function addBook(i) {
+  openModal("添加习题册",
+    '<div class="input-group"><label class="input-label">习题册名称</label><input type="text" class="input" id="bookName" placeholder="如：粉笔1000题"></div>' +
+    '<div class="input-group"><label class="input-label">已完成题数</label><input type="number" class="input" id="bookProgress" placeholder="如：150" value="0"></div>',
+    '<button class="btn btn-ghost" onclick="closeModal()">取消</button><button class="btn btn-primary" onclick="confirmAddBook(' + i + ')">添加</button>');
+  setTimeout(function() { document.getElementById("bookName").focus(); }, 100);
+}
+
+function confirmAddBook(i) {
+  var name = document.getElementById("bookName").value.trim();
+  if (!name) { showToast("请输入习题册名称"); return; }
+  state.studySections[i].exerciseBooks.push({ id: uid(), name: name, progress: document.getElementById("bookProgress").value.trim() });
+  save(); closeModal(); renderPage();
+}
+
+function updateBookProgress(si, bi, val) {
+  state.studySections[si].exerciseBooks[bi].progress = val; save(); showToast("进度已更新");
+}
+
+function deleteBook(si, bi) {
+  state.studySections[si].exerciseBooks.splice(bi, 1); save(); renderPage();
+}
+
+// ============ Experience Posts ============
+function renderExperience() {
+  var secs = state.expSections;
+  var html = '<div class="card"><div class="card-title">✨ 重点总览</div>';
+  if (!secs.length) {
+    html += '<div class="empty-state"><div class="empty-state-icon">💡</div>暂无板块</div>';
+  } else {
+    html += '<div class="stats-grid">';
+    secs.forEach(function(s, i) {
+      html += '<div class="stat-item" style="cursor:pointer" onclick="selectExp(' + i + ')"><div class="stat-value">' + s.keyPoints.length + '</div><div class="stat-label">' + esc(s.name) + '</div></div>';
+    });
+    html += '</div>';
+  }
+  html += '</div>';
+  html += '<button class="btn btn-outline btn-block mb-12" onclick="addExpSection()">＋ 添加板块</button>';
+
+  html += '<div class="chips">';
+  secs.forEach(function(s, i) {
+    html += '<div class="chip ' + (i === expActiveSection ? "active" : "") + '" onclick="selectExp(' + i + ')">' + esc(s.name) + ' (' + s.keyPoints.length + ')</div>';
+  });
+  html += '</div>';
+
+  if (secs[expActiveSection]) {
+    var s = secs[expActiveSection];
+    html += '<div class="two-col">';
+    // Key points
+    html += '<div class="section-block"><div class="section-block-title">✨ 重点提炼';
+    html += '<button class="edit-btn" onclick="renameExpSection(' + expActiveSection + ')">✏️</button>';
+    html += '<button class="edit-btn" onclick="deleteExpSection(' + expActiveSection + ')" style="color:#e85050;margin-left:4px;">🗑</button></div>';
+    if (s.keyPoints.length) {
+      s.keyPoints.forEach(function(kp, ki) {
+        html += '<div class="list-item"><div class="list-item-content"><div class="list-item-title">' + esc(kp) + '</div></div><button class="delete-btn" onclick="deleteKeyPoint(' + expActiveSection + ',' + ki + ')">✕</button></div>';
+      });
+    } else {
+      html += '<div class="empty-state"><div class="empty-state-icon">✨</div>还没有重点<br>粘贴原文后点 🪄 智能简化</div>';
+    }
+    html += '<button class="btn btn-outline btn-sm mt-8" onclick="addKeyPoint(' + expActiveSection + ')">＋ 手动添加一条</button>';
+    html += '</div>';
+    // Raw text
+    html += '<div class="section-block"><div class="section-block-title">📋 经验贴原文</div>';
+    html += '<textarea class="textarea" id="rawText_' + expActiveSection + '" placeholder="在这里粘贴经验贴原文..." style="min-height:200px;" onblur="saveRawText(' + expActiveSection + ',this.value)">' + esc(s.rawText) + '</textarea>';
+    html += '<button class="btn btn-primary btn-block mt-8" onclick="simplifyCurrent(' + expActiveSection + ',this)">🪄 智能简化为重点</button>';
+    html += '</div></div>';
+  }
+  return html;
+}
+
+function selectExp(i) { expActiveSection = i; renderPage(); }
+
+function addExpSection() {
+  openModal("添加板块", '<div class="input-group"><label class="input-label">板块名称</label><input type="text" class="input" id="newExpName" placeholder="如：申论技巧"></div>',
+    '<button class="btn btn-ghost" onclick="closeModal()">取消</button><button class="btn btn-primary" onclick="confirmAddExp()">添加</button>');
+  setTimeout(function() { document.getElementById("newExpName").focus(); }, 100);
+}
+
+function confirmAddExp() {
+  var name = document.getElementById("newExpName").value.trim();
+  if (!name) { showToast("请输入板块名称"); return; }
+  state.expSections.push({ id: uid(), name: name, rawText: "", keyPoints: [] });
+  expActiveSection = state.expSections.length - 1;
+  save(); closeModal(); renderPage();
+}
+
+function renameExpSection(i) {
+  openModal("重命名", '<div class="input-group"><label class="input-label">板块名称</label><input type="text" class="input" id="renameExpInput" value="' + esc(state.expSections[i].name) + '"></div>',
+    '<button class="btn btn-ghost" onclick="closeModal()">取消</button><button class="btn btn-primary" onclick="confirmRenameExp(' + i + ')">保存</button>');
+  setTimeout(function() { document.getElementById("renameExpInput").focus(); }, 100);
+}
+
+function confirmRenameExp(i) {
+  var name = document.getElementById("renameExpInput").value.trim();
+  if (!name) return;
+  state.expSections[i].name = name; save(); closeModal(); renderPage();
+}
+
+function deleteExpSection(i) {
+  if (!confirm("确定删除这个板块吗？")) return;
+  state.expSections.splice(i, 1);
+  if (expActiveSection >= state.expSections.length) expActiveSection = Math.max(0, state.expSections.length - 1);
+  save(); renderPage();
+}
+
+function saveRawText(i, text) {
+  state.expSections[i].rawText = text; save();
+}
+
+function addKeyPoint(i) {
+  openModal("添加重点", '<div class="input-group"><label class="input-label">重点内容</label><textarea class="textarea" id="newKP" placeholder="输入一条重点要点"></textarea></div>',
+    '<button class="btn btn-ghost" onclick="closeModal()">取消</button><button class="btn btn-primary" onclick="confirmAddKP(' + i + ')">添加</button>');
+  setTimeout(function() { document.getElementById("newKP").focus(); }, 100);
+}
+
+function confirmAddKP(i) {
+  var text = document.getElementById("newKP").value.trim();
+  if (!text) { showToast("请输入重点内容"); return; }
+  state.expSections[i].keyPoints.push(text); save(); closeModal(); renderPage();
+}
+
+function deleteKeyPoint(si, ki) {
+  state.expSections[si].keyPoints.splice(ki, 1); save(); renderPage();
+}
+
+var simplifying = false;
+function simplifyCurrent(index, btn) {
+  if (simplifying) return;
+  var rawText = state.expSections[index].rawText;
+  if (!rawText || rawText.trim().length < 10) { showToast("请先粘贴经验贴原文"); return; }
+  simplifying = true;
+  var orig = btn.textContent;
+  btn.textContent = "⏳ 智能简化中...";
+  btn.disabled = true;
+
+  simplifyText(rawText).then(function(points) {
+    if (points && points.length) {
+      var existing = state.expSections[index].keyPoints;
+      points.forEach(function(p) { if (existing.indexOf(p) === -1) existing.push(p); });
+      save();
+      showToast("提炼了 " + points.length + " 条重点！");
+    } else {
+      showToast("未能提取到重点，请手动添加");
+    }
+  }).catch(function(e) {
+    showToast("简化失败：" + (e.message || "未知错误"));
+  }).then(function() {
+    simplifying = false;
+    btn.textContent = orig;
+    btn.disabled = false;
+    renderPage();
+  });
+}
+
+// ============ AI Simplify ============
+async function simplifyText(text) {
+  // Level 1: Server proxy
+  try {
+    var res = await fetch("/api/simplify", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ text: text })
+    });
+    if (res.ok) {
+      var data = await res.json();
+      if (data.points && data.points.length) return data.points;
+    }
+  } catch(e) {}
+
+  // Level 2: Direct API
+  if (state.settings.aiApiKey) {
+    try { return await aiSimplifyDirect(text); } catch(e) {}
+  }
+
+  // Level 3: Local
+  return localSimplify(text);
+}
+
+async function aiSimplifyDirect(text) {
+  var baseUrl = state.settings.aiBaseUrl || "https://api.deepseek.com/v1";
+  var model = state.settings.aiModel || "deepseek-chat";
+  var apiKey = state.settings.aiApiKey;
+  var res = await fetch(baseUrl + "/chat/completions", {
+    method: "POST",
+    headers: { "Content-Type": "application/json", "Authorization": "Bearer " + apiKey },
+    body: JSON.stringify({
+      model: model,
+      messages: [
+        { role: "system", content: "你是一位公考备考助手。请将以下经验贴原文提炼为不超过12条重点要点，每条简洁明了一句话。直接返回JSON数组格式，如 [\"要点1\",\"要点2\"]，不要包含其他文字。" },
+        { role: "user", content: text }
+      ],
+      temperature: 0.3,
+      max_tokens: 800
+    })
+  });
+  if (!res.ok) throw new Error("API请求失败 (" + res.status + ")");
+  var data = await res.json();
+  var content = data.choices[0].message.content;
+  var match = content.match(/\[[\s\S]*?\]/);
+  if (match) {
+    try { return JSON.parse(match[0]); } catch(e) {}
+  }
+  return content.split("\n").map(function(l) { return l.replace(/^\d+[.、)]\s*/,"").replace(/^["'""]/,"").replace(/["'""]$/,"").trim(); }).filter(function(l) { return l.length > 3; }).slice(0, 12);
+}
+
+function localSimplify(text) {
+  var sentences = text.split(/[。；;\n]/).flatMap(function(s) {
+    return s.split(/(?<=\d)[.、)]\s*/).map(function(x) { return x.trim(); });
+  }).filter(function(s) { return s.length > 5 && s.length < 200; });
+
+  var keywords = ["重点","技巧","易错","核心","必须","建议","避免","注意","关键","牢记","一定","切记","掌握","必考","常考","高频","总结","方法","规律","误区","尤其","特别","首先","此外","另外","因此","所以","需要","应该","务必","千万"];
+  var seen = {};
+  var scored = sentences.filter(function(s) {
+    if (seen[s]) return false; seen[s] = true; return true;
+  }).map(function(s) {
+    var score = 0;
+    keywords.forEach(function(kw) { if (s.indexOf(kw) !== -1) score += 3; });
+    if (s.length > 10 && s.length < 80) score += 1;
+    return { text: s, score: score };
+  });
+  scored.sort(function(a, b) { return b.score - a.score; });
+  return scored.slice(0, 12).map(function(s) { return s.text; });
+}
+
+// ============ Review ============
+function renderReview() {
+  var items = state.reviewItems;
+  var today = todayStr();
+  var due = items.filter(function(r) { return !r.completed && r.nextReviewDate <= today; });
+  var upcoming = items.filter(function(r) { return !r.completed && r.nextReviewDate > today; });
+  var done = items.filter(function(r) { return r.completed; });
+
+  var html = '<button class="btn btn-primary btn-block mb-12" onclick="addReview()">＋ 添加复习项</button>';
+
+  if (due.length) {
+    html += '<div class="card"><div class="card-title">📌 今日待复习 (' + due.length + ')</div>';
+    due.forEach(function(r) { html += renderReviewCard(r, today); });
+    html += '</div>';
+  }
+  if (upcoming.length) {
+    html += '<div class="card"><div class="card-title">📅 即将复习</div>';
+    upcoming.forEach(function(r) { html += renderReviewCard(r, today); });
+    html += '</div>';
+  }
+  if (done.length) {
+    html += '<div class="card"><div class="card-title">✅ 已完成 (' + done.length + ')</div>';
+    done.forEach(function(r) { html += renderReviewCard(r, today); });
+    html += '</div>';
+  }
+  if (!items.length) {
+    html += '<div class="empty-state"><div class="empty-state-icon">🔁</div>还没有复习项<br>添加后自动按艾宾浩斯曲线排程</div>';
+  }
+  return html;
+}
+
+function renderReviewCard(r, today) {
+  var isOverdue = !r.completed && r.nextReviewDate < today;
+  var isDue = !r.completed && r.nextReviewDate <= today;
+  var cls = r.completed ? "completed" : (isOverdue ? "overdue" : (isDue ? "due" : ""));
+  var steps = "";
+  for (var i = 0; i < REVIEW_INTERVALS.length; i++) {
+    var sc = "";
+    if (r.reviewHistory && r.reviewHistory.length > i) sc = "done";
+    else if (r.nextReviewIndex === i && !r.completed) sc = "current";
+    steps += '<div class="review-step ' + sc + '"></div>';
+  }
+  var label = r.completed ? '<span class="tag tag-success">✅ 已完成全部复习</span>' :
+    (isOverdue ? '<span class="tag tag-warning">⚠️ 逾期 ' + daysBetween(r.nextReviewDate, today) + ' 天</span>' :
+    (isDue ? '<span class="tag tag-primary">📌 今日待复习</span>' :
+    '<span class="tag tag-gray">📅 ' + r.nextReviewDate + ' 复习</span>'));
+  var btn = r.completed ? "" : '<button class="btn btn-primary btn-sm" onclick="completeReview(\'' + r.id + '\')">✓ 已复习</button>';
+
+  return '<div class="review-item ' + cls + '"><div class="flex-between"><div class="list-item-content"><div class="list-item-title">' + esc(r.title) + '</div><div class="list-item-meta">创建: ' + r.createdDate + ' · 第 ' + (r.nextReviewIndex+1) + '/' + REVIEW_INTERVALS.length + ' 次</div></div><div class="flex gap-8">' + btn + '<button class="delete-btn" onclick="deleteReview(\'' + r.id + '\')">✕</button></div></div>' + (r.content ? '<div class="text-sm mt-8">' + esc(r.content) + '</div>' : '') + '<div class="mt-8">' + label + '</div><div class="review-steps">' + steps + '</div></div>';
+}
+
+function addReview() {
+  openModal("添加复习项",
+    '<div class="input-group"><label class="input-label">标题</label><input type="text" class="input" id="reviewTitle" placeholder="如：言语理解-片段阅读技巧"></div>' +
+    '<div class="input-group"><label class="input-label">内容（可选）</label><textarea class="textarea" id="reviewContent" placeholder="详细内容..."></textarea></div>',
+    '<button class="btn btn-ghost" onclick="closeModal()">取消</button><button class="btn btn-primary" onclick="confirmAddReview()">添加</button>');
+  setTimeout(function() { document.getElementById("reviewTitle").focus(); }, 100);
+}
+
+function confirmAddReview() {
+  var title = document.getElementById("reviewTitle").value.trim();
+  if (!title) { showToast("请输入标题"); return; }
+  var content = document.getElementById("reviewContent").value.trim();
+  var today = todayStr();
+  state.reviewItems.push({
+    id: uid(), title: title, content: content, createdDate: today,
+    nextReviewIndex: 0, nextReviewDate: addDays(today, REVIEW_INTERVALS[0]),
+    reviewHistory: [], completed: false
+  });
+  save(); closeModal(); renderPage();
+  showToast("已添加，首次复习: " + addDays(today, REVIEW_INTERVALS[0]));
+}
+
+function completeReview(id) {
+  var r = state.reviewItems.find(function(x) { return x.id === id; });
+  if (!r) return;
+  r.reviewHistory = r.reviewHistory || [];
+  r.reviewHistory.push(todayStr());
+  r.nextReviewIndex++;
+  if (r.nextReviewIndex >= REVIEW_INTERVALS.length) {
+    r.completed = true; showToast("🎉 全部复习完成！");
+  } else {
+    r.nextReviewDate = addDays(todayStr(), REVIEW_INTERVALS[r.nextReviewIndex]);
+    showToast("下次复习: " + r.nextReviewDate);
+  }
+  save(); renderPage();
+}
+
+function deleteReview(id) {
+  if (!confirm("确定删除这个复习项吗？")) return;
+  state.reviewItems = state.reviewItems.filter(function(x) { return x.id !== id; });
+  save(); renderPage();
+}
+
+// ============ Wrong Answers ============
+function renderWrong() {
+  var answers = state.wrongAnswers;
+  var html = '<div class="mb-12"><button class="btn btn-primary" onclick="addWrong()">＋ 添加错题</button></div>';
+
+  if (answers.length) {
+    var usedSec = {};
+    answers.forEach(function(a) { if (a.section) usedSec[a.section] = true; });
+    html += '<div class="chips">';
+    html += '<div class="chip active" data-filter="" onclick="filterWrong(this,\'\')">全部 (' + answers.length + ')</div>';
+    Object.keys(usedSec).forEach(function(s) {
+      var c = answers.filter(function(a) { return a.section === s; }).length;
+      html += '<div class="chip" data-filter="' + esc(s) + '" onclick="filterWrong(this,\'' + esc(s) + '\')">' + esc(s) + ' (' + c + ')</div>';
+    });
+    html += '</div>';
+  }
+
+  html += '<div class="setting-row mb-12"><span class="setting-label">显示已掌握</span><div class="toggle ' + (wrongShowMastered ? "on" : "") + '" onclick="toggleWrongMastered()"></div></div>';
+
+  var filtered = wrongFilter ? answers.filter(function(a) { return a.section === wrongFilter; }) : answers;
+  if (!wrongShowMastered) filtered = filtered.filter(function(a) { return !a.mastered; });
+
+  if (!filtered.length) {
+    html += '<div class="empty-state"><div class="empty-state-icon">❌</div>' + (answers.length === 0 ? "还没有错题<br>添加后会自动记录" : "没有符合条件的错题") + '</div>';
+  } else {
+    filtered.forEach(function(a) {
+      html += '<div class="card" style="' + (a.mastered ? "opacity:0.6;" : "") + '">';
+      html += '<div class="flex-between mb-8"><div>';
+      if (a.section) html += '<span class="tag tag-primary">' + esc(a.section) + '</span> ';
+      html += '<span class="tag ' + (a.mastered ? "tag-success" : "tag-warning") + '">' + (a.mastered ? "已掌握" : "未掌握") + '</span>';
+      html += '<span class="text-xs text-light" style="margin-left:8px;">' + esc(a.date || "") + '</span></div>';
+      html += '<div class="flex gap-8"><button class="btn btn-sm ' + (a.mastered ? "btn-ghost" : "btn-outline") + '" onclick="toggleMastered(\'' + a.id + '\')">' + (a.mastered ? "↩ 取消" : "✓ 已掌握") + '</button><button class="delete-btn" onclick="deleteWrong(\'' + a.id + '\')">✕</button></div></div>';
+      html += '<div class="mb-8"><b>题干：</b>' + esc(a.question) + '</div>';
+      if (a.myAnswer) html += '<div class="mb-8" style="color:#e85050;"><b>我的答案：</b>' + esc(a.myAnswer) + '</div>';
+      if (a.correctAnswer) html += '<div class="mb-8" style="color:#2e8b2e;"><b>正确答案：</b>' + esc(a.correctAnswer) + '</div>';
+      if (a.analysis) html += '<div style="color:var(--text-light);"><b>解析：</b>' + esc(a.analysis) + '</div>';
+      html += '</div>';
+    });
+  }
+  return html;
+}
+
+function filterWrong(el, sec) {
+  wrongFilter = sec;
+  document.querySelectorAll('.chip[data-filter]').forEach(function(c) { c.classList.remove("active"); });
+  el.classList.add("active");
+  renderPage();
+}
+
+function toggleWrongMastered() { wrongShowMastered = !wrongShowMastered; renderPage(); }
+
+function addWrong() {
+  var secOpts = state.studySections.map(function(s) { return '<option>' + esc(s.name) + '</option>'; }).join("");
+  openModal("添加错题",
+    '<div class="input-group"><label class="input-label">题干</label><textarea class="textarea" id="wrongQ" placeholder="输入题目内容"></textarea></div>' +
+    '<div class="row"><div class="input-group"><label class="input-label">我的答案</label><input type="text" class="input" id="wrongMA" placeholder="如：B"></div><div class="input-group"><label class="input-label">正确答案</label><input type="text" class="input" id="wrongCA" placeholder="如：D"></div></div>' +
+    '<div class="input-group"><label class="input-label">解析（可选）</label><textarea class="textarea" id="wrongAn" placeholder="解题思路..."></textarea></div>' +
+    '<div class="row"><div class="input-group"><label class="input-label">所属板块</label><select class="select" id="wrongSec"><option value="">无</option>' + secOpts + '</select></div><div class="input-group"><label class="input-label">日期</label><input type="date" class="input" id="wrongDate" value="' + todayStr() + '"></div></div>',
+    '<button class="btn btn-ghost" onclick="closeModal()">取消</button><button class="btn btn-primary" onclick="confirmAddWrong()">添加</button>');
+  setTimeout(function() { document.getElementById("wrongQ").focus(); }, 100);
+}
+
+function confirmAddWrong() {
+  var q = document.getElementById("wrongQ").value.trim();
+  if (!q) { showToast("请输入题干"); return; }
+  state.wrongAnswers.push({
+    id: uid(), question: q,
+    myAnswer: document.getElementById("wrongMA").value.trim(),
+    correctAnswer: document.getElementById("wrongCA").value.trim(),
+    analysis: document.getElementById("wrongAn").value.trim(),
+    section: document.getElementById("wrongSec").value,
+    date: document.getElementById("wrongDate").value,
+    mastered: false
+  });
+  save(); closeModal(); renderPage(); showToast("错题已添加");
+}
+
+function toggleMastered(id) {
+  var a = state.wrongAnswers.find(function(x) { return x.id === id; });
+  if (a) { a.mastered = !a.mastered; save(); renderPage(); }
+}
+
+function deleteWrong(id) {
+  if (!confirm("确定删除这道错题吗？")) return;
+  state.wrongAnswers = state.wrongAnswers.filter(function(x) { return x.id !== id; });
+  save(); renderPage();
+}
+
+// ============ Exam Scores ============
+function renderExam() {
+  var scores = state.examScores;
+  var html = '<button class="btn btn-primary btn-block mb-12" onclick="addExam()">＋ 添加模考成绩</button>';
+
+  if (!scores.length) {
+    html += '<div class="empty-state"><div class="empty-state-icon">📝</div>还没有模考记录<br>添加后可以看到成绩趋势</div>';
+    return html;
+  }
+
+  var chartData = scores.map(function(s) { return { date: s.date, xingce: s.xingce||0, shenlun: s.shenlun||0 }; });
+  html += '<div class="chart-container"><div class="card-title">📈 成绩趋势</div>';
+  html += createLineChart(chartData, "date", [{key:"xingce",label:"行测"},{key:"shenlun",label:"申论"}]);
+  html += '</div>';
+
+  scores.forEach(function(s, i) {
+    var total = (s.xingce||0) + (s.shenlun||0);
+    html += '<div class="card"><div class="flex-between mb-8"><div><b>' + esc(s.name || "模考" + (i+1)) + '</b> <span class="text-xs text-light">' + esc(s.date) + '</span></div><button class="btn btn-sm btn-ghost" onclick="deleteExam(\'' + s.id + '\')">删除</button></div>';
+    html += '<div class="stats-grid"><div class="stat-item"><div class="stat-value">' + (s.xingce||0) + '</div><div class="stat-label">行测</div></div><div class="stat-item"><div class="stat-value">' + (s.shenlun||0) + '</div><div class="stat-label">申论</div></div><div class="stat-item"><div class="stat-value">' + total + '</div><div class="stat-label">总分</div></div></div>';
+    if (s.sections && Object.keys(s.sections).length) {
+      html += '<div class="mt-8 text-sm">板块小分：</div><div class="flex flex-wrap gap-8 mt-8">';
+      for (var k in s.sections) html += '<span class="tag tag-gray">' + esc(k) + ': ' + esc(s.sections[k]) + '</span>';
+      html += '</div>';
+    }
+    html += '</div>';
+  });
+  return html;
+}
+
+function addExam() {
+  var secOpts = state.studySections.map(function(s) { return '<label class="input-label">' + esc(s.name) + '</label><input type="number" class="input mb-8" id="examSec_' + s.id + '" placeholder="0">'; }).join("");
+  openModal("添加模考成绩",
+    '<div class="input-group"><label class="input-label">模考名称</label><input type="text" class="input" id="examName" placeholder="如：2026国考模考第1次"></div>' +
+    '<div class="input-group"><label class="input-label">日期</label><input type="date" class="input" id="examDate" value="' + todayStr() + '"></div>' +
+    '<div class="row"><div class="input-group"><label class="input-label">行测分数</label><input type="number" class="input" id="examXingce" placeholder="如：75"></div><div class="input-group"><label class="input-label">申论分数</label><input type="number" class="input" id="examShenlun" placeholder="如：68"></div></div>' +
+    '<div class="input-group"><label class="input-label">板块小分（可选）</label>' + secOpts + '</div>',
+    '<button class="btn btn-ghost" onclick="closeModal()">取消</button><button class="btn btn-primary" onclick="confirmAddExam()">添加</button>');
+  setTimeout(function() { document.getElementById("examName").focus(); }, 100);
+}
+
+function confirmAddExam() {
+  var name = document.getElementById("examName").value.trim();
+  if (!name) { showToast("请输入模考名称"); return; }
+  var sections = {};
+  state.studySections.forEach(function(s) {
+    var el = document.getElementById("examSec_" + s.id);
+    if (el && el.value) sections[s.name] = el.value;
+  });
+  state.examScores.push({
+    id: uid(), name: name, date: document.getElementById("examDate").value,
+    xingce: parseFloat(document.getElementById("examXingce").value) || 0,
+    shenlun: parseFloat(document.getElementById("examShenlun").value) || 0,
+    sections: sections
+  });
+  save(); closeModal(); renderPage(); showToast("成绩已添加");
+}
+
+function deleteExam(id) {
+  if (!confirm("确定删除这条成绩吗？")) return;
+  state.examScores = state.examScores.filter(function(x) { return x.id !== id; });
+  save(); renderPage();
+}
+
+// ============ Settings ============
+function renderSettings() {
+  var s = state.settings;
+  var html = "";
+
+  // Font size
+  html += '<div class="card"><div class="card-title">🔠 字体大小</div>';
+  html += '<div class="font-preset-chips">';
+  var presets = [{v:90,l:"小90%"},{v:100,l:"标准100%"},{v:115,l:"大115%"},{v:130,l:"特大130%"}];
+  presets.forEach(function(p) {
+    html += '<div class="chip ' + (s.fontSize === p.v ? "active" : "") + '" onclick="setFontSize(' + p.v + ')">' + p.l + '</div>';
+  });
+  html += '</div>';
+  html += '<input type="range" class="slider" min="80" max="150" value="' + s.fontSize + '" onchange="setFontSize(this.value)">';
+  html += '<div class="text-center text-xs text-light mt-8">当前: ' + s.fontSize + '%</div></div>';
+
+  // AI settings
+  html += '<div class="card"><div class="card-title">🤖 AI 智能简化</div>';
+  html += '<div class="setting-row"><div><div class="setting-label">启用 AI 智能简化</div><div class="setting-desc">关闭后将使用本地规则提取</div></div><div class="toggle ' + (s.aiEnabled ? "on" : "") + '" onclick="toggleAI()"></div></div>';
+  html += '<div class="input-group mt-12"><label class="input-label">Base URL</label><input type="text" class="input" id="aiBaseUrl" value="' + esc(s.aiBaseUrl) + '" placeholder="https://api.deepseek.com/v1" onchange="updateAI(\'aiBaseUrl\',this.value)"></div>';
+  html += '<div class="input-group"><label class="input-label">模型名</label><input type="text" class="input" id="aiModel" value="' + esc(s.aiModel) + '" placeholder="deepseek-chat" onchange="updateAI(\'aiModel\',this.value)"></div>';
+  html += '<div class="input-group"><label class="input-label">API Key（浏览器直连）</label><input type="password" class="input" id="aiApiKey" value="' + esc(s.aiApiKey) + '" placeholder="sk-..." onchange="updateAI(\'aiApiKey\',this.value)"></div>';
+  html += '<div class="setting-desc">注意：浏览器直连可能被 CORS 拦截，失败自动回退本地规则提取。推荐部署 server.js 使用服务端代理。</div></div>';
+
+  // Nav sort
+  html += '<div class="card"><div class="card-title">🔀 导航排序</div>';
+  state.nav.forEach(function(item, i) {
+    html += '<div class="nav-sort-item"><span class="nav-sort-icon">' + item.icon + '</span><span class="nav-sort-label">' + esc(item.label) + '</span>';
+    html += '<button class="nav-sort-btn" onclick="moveNav(' + i + ',-1)" ' + (i === 0 ? 'disabled' : '') + '>↑</button>';
+    html += '<button class="nav-sort-btn" onclick="moveNav(' + i + ',1)" ' + (i === state.nav.length-1 ? 'disabled' : '') + '>↓</button>';
+    if (item.type === "custom") html += '<button class="nav-sort-btn" onclick="deleteNav(' + i + ')" style="color:#e85050;">✕</button>';
+    html += '</div>';
+  });
+  html += '<button class="btn btn-outline btn-sm mt-8" onclick="addNav()">＋ 添加自定义页</button></div>';
+
+  // Account sync
+  html += '<div class="card"><div class="card-title">👤 账号同步</div>';
+  if (auth.token && auth.username) {
+    html += '<div class="setting-row"><div><div class="setting-label">已登录：' + esc(auth.username) + '</div><div class="setting-desc">上次同步：' + esc(auth.lastSync ? formatDate(auth.lastSync) : "未知") + '</div></div></div>';
+    html += '<div class="row mt-12"><button class="btn btn-primary" onclick="syncNow()">立即同步</button><button class="btn btn-danger" onclick="logout()">退出</button></div>';
+  } else {
+    html += '<div class="input-group"><label class="input-label">同步服务器地址</label><input type="text" class="input" id="syncServer" value="' + esc(s.syncServer) + '" placeholder="https://your-app.onrender.com"></div>';
+    html += '<div class="row"><div class="input-group"><label class="input-label">用户名</label><input type="text" class="input" id="syncUser" placeholder="用户名"></div><div class="input-group"><label class="input-label">密码</label><input type="password" class="input" id="syncPass" placeholder="密码"></div></div>';
+    html += '<button class="btn btn-primary btn-block mt-8" onclick="registerLogin()">注册并登录</button>';
+  }
+  html += '</div>';
+
+  // Data backup
+  html += '<div class="card"><div class="card-title">💾 数据备份 / 导入</div>';
+  html += '<button class="btn btn-outline btn-block mb-12" onclick="exportData()">📥 导出全部数据</button>';
+  html += '<input type="file" id="importFile" accept=".json" style="display:none" onchange="importData(event)">';
+  html += '<button class="btn btn-outline btn-block" onclick="document.getElementById(\'importFile\').click()">📤 导入数据</button>';
+  html += '<div class="setting-desc mt-8">导出的 JSON 文件保存在本机，请另行存云盘备份。</div></div>';
+
+  // Stats
+  html += '<div class="card"><div class="card-title">📊 数据统计</div><div class="stats-grid">';
+  html += '<div class="stat-item"><div class="stat-value">' + state.studySections.length + '</div><div class="stat-label">学习板块</div></div>';
+  html += '<div class="stat-item"><div class="stat-value">' + state.expSections.length + '</div><div class="stat-label">经验贴板块</div></div>';
+  html += '<div class="stat-item"><div class="stat-value">' + countStudyRecords() + '</div><div class="stat-label">学习记录</div></div>';
+  html += '<div class="stat-item"><div class="stat-value">' + countKeyPoints() + '</div><div class="stat-label">重点提炼</div></div>';
+  html += '<div class="stat-item"><div class="stat-value">' + state.wrongAnswers.length + '</div><div class="stat-label">错题</div></div>';
+  html += '<div class="stat-item"><div class="stat-value">' + state.reviewItems.length + '</div><div class="stat-label">复习项</div></div>';
+  html += '</div></div>';
+
+  return html;
+}
+
+function setFontSize(v) {
+  state.settings.fontSize = parseInt(v);
+  applyFontSize();
+  save();
+  renderPage();
+}
+
+function applyFontSize() {
+  document.getElementById("app").style.zoom = (state.settings.fontSize / 100);
+  // For browsers that don't support zoom
+  document.getElementById("app").style.transform = "";
+}
+
+function toggleAI() {
+  state.settings.aiEnabled = !state.settings.aiEnabled;
+  save(); renderPage();
+}
+
+function updateAI(key, val) {
+  state.settings[key] = val; save();
+}
+
+function addNav() {
+  openModal("添加自定义页",
+    '<div class="input-group"><label class="input-label">图标（emoji）</label><input type="text" class="input" id="navIcon" placeholder="📝" maxlength="2"></div>' +
+    '<div class="input-group"><label class="input-label">名称</label><input type="text" class="input" id="navLabel" placeholder="如：备忘录"></div>',
+    '<button class="btn btn-ghost" onclick="closeModal()">取消</button><button class="btn btn-primary" onclick="confirmAddNav()">添加</button>');
+  setTimeout(function() { document.getElementById("navIcon").focus(); }, 100);
+}
+
+function confirmAddNav() {
+  var icon = document.getElementById("navIcon").value.trim() || "📝";
+  var label = document.getElementById("navLabel").value.trim();
+  if (!label) { showToast("请输入名称"); return; }
+  state.nav.push({ id: uid(), icon: icon, label: label, type: "custom", content: "" });
+  save(); closeModal(); renderNav(); renderPage(); showToast("已添加");
+}
+
+function deleteNav(i) {
+  if (!confirm("确定删除这个导航项吗？")) return;
+  state.nav.splice(i, 1); save(); renderNav(); renderPage(); showToast("已删除");
+}
+
+function renderCustomNote(item) {
+  var html = '<div class="card"><div class="card-title">' + item.icon + ' ' + esc(item.label) + '</div>';
+  html += '<textarea class="textarea" id="customNote" style="min-height:400px;" placeholder="在这里写点什么..." onblur="saveCustomNote(\'' + item.id + '\',this.value)">' + esc(item.content || "") + '</textarea></div>';
+  return html;
+}
+
+function saveCustomNote(id, text) {
+  var item = state.nav.find(function(n) { return n.id === id; });
+  if (item) { item.content = text; save(); }
+}
+
+// ============ Sync ============
+async function healthCheck() {
+  var server = state.settings.syncServer || "";
+  if (!server) return { proxy: false, sync: false, model: "", hasKey: false };
+  try {
+    var res = await fetch(server + "/api/health");
+    return await res.json();
+  } catch(e) {
+    return { proxy: false, sync: false, model: "", hasKey: false };
+  }
+}
+
+async function syncPush() {
+  if (!auth.token) return;
+  var server = auth.syncServer || state.settings.syncServer;
+  if (!server) return;
+  try {
+    await fetch(server + "/api/sync", {
+      method: "POST",
+      headers: { "Content-Type": "application/json", "Authorization": "Bearer " + auth.token },
+      body: JSON.stringify({ data: state, updatedAt: Date.now() })
+    });
+    auth.lastSync = Date.now();
+    saveAuth();
+  } catch(e) {}
+}
+
+async function syncPull() {
+  if (!auth.token) return;
+  var server = auth.syncServer || state.settings.syncServer;
+  if (!server) return;
+  try {
+    var res = await fetch(server + "/api/sync", {
+      headers: { "Authorization": "Bearer " + auth.token }
+    });
+    if (!res.ok) return;
+    var data = await res.json();
+    if (data.data && data.updatedAt > (state.updatedAt || 0)) {
+      state = data.data;
+      state.updatedAt = data.updatedAt;
+      saveNow();
+      renderPage();
+      showToast("已从云端拉取最新数据");
+    }
+  } catch(e) {}
+}
+
+async function registerLogin() {
+  var server = document.getElementById("syncServer").value.trim();
+  var user = document.getElementById("syncUser").value.trim();
+  var pass = document.getElementById("syncPass").value;
+  if (!server || !user || !pass) { showToast("请填写完整信息"); return; }
+  state.settings.syncServer = server;
+  save();
+
+  try {
+    // Try register first
+    var res = await fetch(server + "/api/auth/register", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ username: user, password: pass })
+    });
+    if (res.status === 409) {
+      // Already exists, login instead
+      res = await fetch(server + "/api/auth/login", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ username: user, password: pass })
+      });
+    }
+    if (res.status === 401) { showToast("密码错误"); return; }
+    if (!res.ok) { showToast("请求失败"); return; }
+    var data = await res.json();
+    auth = { token: data.token, username: user, syncServer: server, lastSync: 0 };
+    saveAuth();
+    showToast("登录成功！正在同步...");
+    await syncPush();
+    renderPage();
+  } catch(e) {
+    showToast("连接失败，请检查服务器地址");
+  }
+}
+
+async function syncNow() {
+  await syncPush();
+  await syncPull();
+  showToast("同步完成");
+  renderPage();
+}
+
+function logout() {
+  if (!confirm("确定退出登录吗？")) return;
+  var server = auth.syncServer || state.settings.syncServer;
+  if (server) {
+    try {
+      fetch(server + "/api/auth/logout", {
+        method: "POST",
+        headers: { "Authorization": "Bearer " + auth.token }
+      });
+    } catch(e) {}
+  }
+  auth = {};
+  saveAuth();
+  showToast("已退出登录");
+  renderPage();
+}
+
+// ============ Data Backup ============
+function exportData() {
+  saveNow();
+  var data = JSON.stringify(state, null, 2);
+  var blob = new Blob([data], { type: "application/json" });
+  var url = URL.createObjectURL(blob);
+  var a = document.createElement("a");
+  a.href = url;
+  a.download = "winnie_backup_" + todayStr() + ".json";
+  a.click();
+  URL.revokeObjectURL(url);
+  showToast("数据已导出");
+}
+
+function importData(event) {
+  var file = event.target.files[0];
+  if (!file) return;
+  var reader = new FileReader();
+  reader.onload = function(e) {
+    try {
+      var data = JSON.parse(e.target.result);
+      if (!data.nav || !data.studySections) { showToast("文件格式不正确"); return; }
+      if (!confirm("导入将覆盖当前数据，确定继续吗？")) return;
+      state = data;
+      saveNow();
+      renderNav();
+      renderPage();
+      showToast("数据已导入");
+    } catch(err) {
+      showToast("文件解析失败");
+    }
+  };
+  reader.readAsText(file);
+}
+
+// ============ Init ============
+async function init() {
+  loadState();
+  loadAuth();
+  applyFontSize();
+  renderNav();
+  switchPage("home");
+
+  // Health check
+  try {
+    var health = await healthCheck();
+    if (health.proxy || health.sync) {
+      // Auto-set sync server to same origin
+      var origin = window.location.origin;
+      if (origin && origin !== "null" && origin.startsWith("http")) {
+        if (state.settings.syncServer !== origin) {
+          state.settings.syncServer = origin;
+          save();
+        }
+      }
+    }
+    // Auto-pull if logged in
+    if (auth.token && health.sync) {
+      await syncPull();
+    }
+  } catch(e) {}
+}
+
+init();
+</script>
+</body>
+</html>

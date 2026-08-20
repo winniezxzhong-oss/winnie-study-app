@@ -1,0 +1,16 @@
+services:
+  - type: web
+    name: winnie-study-app
+    runtime: node
+    plan: free
+    buildCommand: "true"
+    startCommand: "node server.js"
+    envVars:
+      - key: AI_API_KEY
+        sync: false
+      - key: AI_API_BASE
+        value: https://api.deepseek.com/v1
+      - key: AI_MODEL
+        value: deepseek-chat
+    healthCheckPath: /api/health
+    autoDeploy: true

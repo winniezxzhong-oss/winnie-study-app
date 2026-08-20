@@ -1,0 +1,14 @@
+{
+  "name": "winnie-study-app",
+  "version": "1.0.0",
+  "description": "🎀 Winnie上岸吧 - 公务员/事业编备考单文件网页App",
+  "main": "server.js",
+  "scripts": {
+    "start": "node server.js"
+  },
+  "engines": {
+    "node": ">=14.0.0"
+  },
+  "keywords": ["公考", "备考", "刷题", "学习计划"],
+  "license": "MIT"
+}
